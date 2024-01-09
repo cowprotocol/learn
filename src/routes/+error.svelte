@@ -14,7 +14,7 @@
 	{#if $page.status === 404}
 		<h1>Not found!</h1>
 	{:else if online}
-		<h1>Yikes!</h1>
+		<h1>Mooo!</h1>
 
 		{#if $page.error?.message}
 			<p class="error">{$page.status}: {$page.error.message}</p>
@@ -23,9 +23,9 @@
 		<p>Please try reloading the page.</p>
 
 		<p>
-			If the error persists, please drop by <a href="https://svelte.dev/chat">Discord chatroom</a>
-			and let us know, or raise an issue on
-			<a href="https://github.com/sveltejs/svelte">GitHub</a>. Thanks!
+			If the error persists, please drop by <a href="https://discord.com/invite/cowprotocol">#tech-talk</a>
+			 on Discord and let us know, or raise an issue on
+			<a href="https://github.com/cowprotocol/tutorial">GitHub</a>. Thanks!
 		</p>
 	{:else}
 		<h1>It looks like you're offline</h1>

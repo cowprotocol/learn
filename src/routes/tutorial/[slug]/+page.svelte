@@ -126,20 +126,20 @@
 </script>
 
 <svelte:head>
-	<title>{data.exercise.chapter.title} / {data.exercise.title} • Svelte Tutorial</title>
+	<title>{data.exercise.chapter.title} / {data.exercise.title} • CoW Protocol Tutorial</title>
 
-	<meta name="twitter:title" content="{data.exercise.title} • Svelte Tutorial" />
+	<meta name="twitter:title" content="{data.exercise.title} • CoW Protocol Tutorial" />
 	<meta name="twitter:card" content="summary" />
-	<meta name="twitter:site" content="@sveltejs" />
-	<meta name="twitter:creator" content="@sveltejs" />
-	<meta name="twitter:image" content="https://svelte.dev/images/twitter-thumbnail.jpg" />
-	<meta property="twitter:domain" content="learn.svelte.dev" />
-	<meta property="twitter:url" content="https://learn.svelte.dev" />
+	<meta name="twitter:site" content="@CoWSwap" />
+	<meta name="twitter:creator" content="@CoWSwap" />
+	<meta name="twitter:image" content="https://cow.fi/images/og-meta-cowprotocol.png" />
+	<meta property="twitter:domain" content="learn.cow.fi" />
+	<meta property="twitter:url" content="https://learn.cow.fi" />
 
-	<meta property="og:title" content="{data.exercise.title} • Svelte Tutorial" />
-	<meta property="og:url" content="https://learn.svelte.dev" />
+	<meta property="og:title" content="{data.exercise.title} • CoW Protocol Tutorial" />
+	<meta property="og:url" content="https://learn.cow.fi" />
 	<meta property="og:type" content="website" />
-	<meta property="og:image" content="https://svelte.dev/images/twitter-thumbnail.jpg" />
+	<meta property="og:image" content="https://cow.fi/images/og-meta-cowprotocol.png" />
 </svelte:head>
 
 <svelte:window

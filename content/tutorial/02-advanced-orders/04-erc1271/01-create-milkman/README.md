@@ -1,5 +1,0 @@
----
-title: Create order
----
-
-Something

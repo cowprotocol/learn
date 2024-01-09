@@ -14,8 +14,6 @@
 
 	/** @type {string} */
 	export let status;
-
-	$: is_svelte = /Part (1|2)/.test($page.data.exercise.part.title);
 </script>
 
 <div class="loading">
@@ -40,7 +38,7 @@
 					</p>
 					<p>
 						If you have 'Delete cookies and site data when Firefox is closed' enabled in
-						<code>about:preferences#privacy</code>, make sure <code>learn.svelte.dev</code> is included
+						<code>about:preferences#privacy</code>, make sure <code>learn.cow.fi</code> is included
 						as an exception.
 					</p>
 				{:else if /chrome/i.test(navigator.userAgent) && !/edg/i.test(navigator.userAgent)}
@@ -59,19 +57,13 @@
 							/>
 						</svg>
 						icon in the URL bar or go to
-						<code>chrome://settings/cookies</code> and add <code>learn.svelte.dev</code> to 'Sites that
+						<code>chrome://settings/cookies</code> and add <code>learn.cow.fi</code> to 'Sites that
 						can always use cookies'.
 					</p>
 				{:else}
 					<p>
 						We couldn't start the app. Please ensure third party cookies are enabled for this site.
 					</p>
-				{/if}
-
-				{#if is_svelte}
-					<a href="https://svelte.dev/tutorial/{$page.data.exercise.slug}">
-						Go to the legacy svelte tutorial instead <Icon name="arrow-right" />
-					</a>
 				{/if}
 			</div>
 

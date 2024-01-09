@@ -4,10 +4,10 @@ title: Cancelling order
 
 In the previous tutorials we have create a pre-signed order and showed how to view it. Let's say for some reason we want to cancel the order (like instead of buying 1 xDAI worth of COW, you now want to buy 200 xDAI worth of COW)! In this tutorial we will show how to cancel an order.
 
-In order to cancel an order, we can either:
+There are actually two ways to cancel a **pre-signed** order:
 
-- Set `signed` to `false` using `setPreSignature`
-- Invalidate the order using `invalidateOrder`
+1. Set `signed` to `false` using `setPreSignature`
+2. Invalidate the order using `invalidateOrder`, as seen in [cancelling on-chain](/tutorial/cancel-on-chain-order)
 
 We will use the first method in this tutorial (as it results in a cheaper transaction fee).
 

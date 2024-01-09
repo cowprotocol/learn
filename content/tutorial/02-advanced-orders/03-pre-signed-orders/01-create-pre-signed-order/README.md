@@ -307,7 +307,7 @@ export function run(provider: Web3Provider): Promise<unknown> {
 ```
 > The above applies a 0.5% slippage to the order.
 
-> This is the first instance demonstrating the use of a `limit` order. This is done by setting the `feeAmount` to `0`. **Caution**: Ensure that you have set the metadata order class to `limit` otherwise the order will be rejected.
+> This is the first instance demonstrating the use of a partially-fillable `limit` order. **Caution:** Market orders must be fill-or-kill and *cannot* be partially fillable.
 
 At this stage, the order is created in the order book, but it is not valid (it will show as 'Signing' in the [Explorer](https://explorer.cow.fi/)). To make the order valid, we need to create a transaction to the `GPv2Settlement` contract that sets the pre-signature (i.e. `setPreSignature`).
 

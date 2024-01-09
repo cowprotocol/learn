@@ -41,9 +41,7 @@ export async function run(provider: Web3Provider): Promise<unknown> {
 }
 ```
 
-> Unfortunately there are no functions exported (yet) from the `cow-sdk` that allow for computing the `EIP-712` digest of an **ABI-encoded** `GPv2Order.Data` struct. The `onchainOrderToHash` function is defined in the `gpv2Order.ts` file and usable for this tutorial. 
-
-> The `ethFlowOrderUid` above returns the concatenation of the `digest`, `owner` and `expiry` fields of the `orderUid`. The `owner` field is the address of the Eth-flow contract, and the `expiry` field is the maximum possible value for a `uint32`, ie. `2^32 - 1`.
+> Unfortunately there are no functions exported (yet) from the `cow-sdk` that allow for computing the `EIP-712` digest of an **ABI-encoded** `GPv2Order.Data` struct. The `onchainOrderToHash` function is defined in the `gpv2Order.ts` file and usable for this tutorial.
 
 ## Contract (`CoWSwapEthFlow`) `OrderPlacement` events
 
@@ -89,23 +87,20 @@ export async function run(provider: Web3Provider): Promise<unknown> {
     // ...
 
     const ethFlowOrderUids: string[] = receipt.logs
-        .map((log) => {
+        .reduce((orderIds, log) => {
             if (log.address !== ethFlowAddress) {
-                return;
+                return orderIds;
             }
 
             const parsedLog = iface.parseLog(log);
             if (parsedLog.name === 'OrderPlacement') {
                 const [, order, ,] = parsedLog.args;
 
-                return ethFlowOrderUid(order);
+                orderIds.push(ethFlowOrderUid(order));
             }
-        })
-        .filter((uid) => uid !== undefined);
-
-    return {
-        ethFlowOrderUids,
-    }
+            
+            return orderIds;
+        }, []);
 }
 ```
 

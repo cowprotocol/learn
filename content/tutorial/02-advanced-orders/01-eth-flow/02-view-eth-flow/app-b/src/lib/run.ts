@@ -22,19 +22,20 @@ export async function run(provider: Web3Provider): Promise<unknown> {
     const receipt = await provider.getTransactionReceipt(txHash);
 
     const ethFlowOrderUids: string[] = receipt.logs
-        .map((log) => {
+        .reduce((orderIds, log) => {
             if (log.address !== ethFlowAddress) {
-                return;
+                return orderIds;
             }
 
             const parsedLog = iface.parseLog(log);
             if (parsedLog.name === 'OrderPlacement') {
                 const [, order, ,] = parsedLog.args;
 
-                return ethFlowOrderUid(order);
+                orderIds.push(ethFlowOrderUid(order));
             }
-        })
-        .filter((uid) => uid !== undefined);
+            
+            return orderIds;
+        }, []);
 
     return {
         ethFlowOrderUids,

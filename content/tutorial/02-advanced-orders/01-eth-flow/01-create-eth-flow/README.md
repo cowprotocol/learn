@@ -2,7 +2,7 @@
 title: Creating order
 ---
 
-[Eth-flow](https://beta.docs.cow.fi/cow-protocol/reference/contracts/periphery/eth-flow) allows users to create orders selling `ETH` without wrapping it to `WETH` first.
+[Eth-flow](https://docs.cow.fi/cow-protocol/reference/contracts/periphery/eth-flow) allows users to create orders selling `ETH` without wrapping it to `WETH` first.
 
 To create an `Eth-flow` order we will need to interact with the `Eth-Flow` contract.
 
@@ -19,7 +19,7 @@ Additionally, as we want to **make a transaction**, we must have a _signer_ (e.g
 
 ### Contract address
 
-`EthFlow` is a periphery contract, and it's deployed on each supported network. As `EthFlow` orders are natively indexed by the [autopilot](https://beta.docs.cow.fi/cow-protocol/tutorials/arbitrate/autopilot), there also exists a `production` and `staging` version of the contract on each network.
+`EthFlow` is a periphery contract, and it's deployed on each supported network. As `EthFlow` orders are natively indexed by the [autopilot](https://docs.cow.fi/cow-protocol/tutorials/arbitrate/autopilot), there also exists a `production` and `staging` version of the contract on each network.
 
 For this tutorial, we will use the [`production` version of the contract](https://gnosisscan.io/address/0x40A50cf069e992AA4536211B23F286eF88752187) on Gnosis chain. Let's assign it's address to a constant:
 
@@ -136,7 +136,7 @@ In addition to the `OrderQuoteRequest` fields we've used in the previous tutoria
 
 ### `EthFlowOrder.Data` struct
 
-Now that we have a quote, we can go about creating an `EthFlow` order. Unfortunately no `EthFlowOrder` type exists in the SDK, so we will need to create one ourselves. Simply we create a type that extends the `UnsignedOrder` type (removing the fields that are not required for [`EthFlow` orders](https://beta.docs.cow.fi/cow-protocol/reference/contracts/periphery/eth-flow#ethfloworderdata)) and add a `quoteId` field:
+Now that we have a quote, we can go about creating an `EthFlow` order. Unfortunately no `EthFlowOrder` type exists in the SDK, so we will need to create one ourselves. Simply we create a type that extends the `UnsignedOrder` type (removing the fields that are not required for [`EthFlow` orders](https://docs.cow.fi/cow-protocol/reference/contracts/periphery/eth-flow#ethfloworderdata)) and add a `quoteId` field:
 
 ```typescript
 /// file: run.ts

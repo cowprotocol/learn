@@ -51,7 +51,7 @@ An example `orderId` should look like:
 }
 ```
 
-> The [`orderId`](https://beta.docs.cow.fi/cow-protocol/reference/contracts/core/settlement#orderuid) is the unique identifier for the order we have just submitted. We can use this `orderId` (also known as `orderUid`) to check the status of the order on [CoW Explorer](https://beta.docs.cow.fi/cow-protocol/tutorials/cow-explorer/order). Keep this handy, as we will practice some more with this `orderId` in the next tutorial!
+> The [`orderId`](https://docs.cow.fi/cow-protocol/reference/contracts/core/settlement#orderuid) is the unique identifier for the order we have just submitted. We can use this `orderId` (also known as `orderUid`) to check the status of the order on [CoW Explorer](https://docs.cow.fi/cow-protocol/tutorials/cow-explorer/order). Keep this handy, as we will practice some more with this `orderId` in the next tutorial!
 
 ### Errors
 

@@ -2,13 +2,13 @@
 title: Viewing status
 ---
 
-One of the more difficult things to do with `Eth-flow` orders is to determine their status, as to do so we need to know the [`orderUid`](https://beta.docs.cow.fi/cow-protocol/reference/contracts/core/settlement#orderuid) of the order.
+One of the more difficult things to do with `Eth-flow` orders is to determine their status, as to do so we need to know the [`orderUid`](https://docs.cow.fi/cow-protocol/reference/contracts/core/settlement#orderuid) of the order.
 
 In this tutorial, we will learn how to determine the `orderUid` of an `Eth-flow` order, and how to use it to determine the order's status.
 
 ## Determining the `orderUid`
 
-Upon consulting the documentation's Technical reference on [`orderUid`](https://beta.docs.cow.fi/cow-protocol/reference/contracts/core/settlement#orderuid), we can see that the `orderUid` is composed of the following fields:
+Upon consulting the documentation's Technical reference on [`orderUid`](https://docs.cow.fi/cow-protocol/reference/contracts/core/settlement#orderuid), we can see that the `orderUid` is composed of the following fields:
 
 - `digest`: The EIP-712 digest of the `GPv2Order.Data` struct
 - `owner`: The address of the order's owner

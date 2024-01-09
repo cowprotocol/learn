@@ -35,18 +35,18 @@
 		</svelte:fragment>
 
 		<svelte:fragment slot="external-links">
-			<a href="https://svelte.dev">Svelte</a>
+			<a href="https://cow.fi">CoW DAO</a>
 
-			<a href="https://kit.svelte.dev">SvelteKit</a>
+			<a href="https://docs.cow.fi">Documentation</a>
 
 			<Separator />
 
-			<a href="https://svelte.dev/chat" title="Discord Chat">
+			<a href="https://discord.com/invite/cowprotocol" title="Discord Chat">
 				<span class="small">Discord</span>
 				<span class="large"><Icon name="discord" /></span>
 			</a>
 
-			<a href="https://github.com/sveltejs/learn.svelte.dev" title="GitHub Repo">
+			<a href="https://github.com/cowprotocol/tutorial" title="GitHub Repo">
 				<span class="small">GitHub</span>
 				<span class="large"><Icon name="github" /></span>
 			</a>

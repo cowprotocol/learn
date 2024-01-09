@@ -12,7 +12,7 @@
 
 	const dispatch = createEventDispatcher();
 
-	const namespace = 'learn.svelte.dev';
+	const namespace = 'learn.cow.fi';
 	const copy_enabled = `${namespace}:copy_enabled`;
 
 	/** @type {HTMLElement} */
@@ -84,7 +84,7 @@
 			target="_blank"
 			rel="noreferrer"
 			class="edit"
-			href="https://github.com/sveltejs/learn.svelte.dev/tree/main/{exercise.dir}"
+			href="https://github.com/cowprotocol/tutorial/tree/main/{exercise.dir}"
 		>
 			Edit this page
 		</a>

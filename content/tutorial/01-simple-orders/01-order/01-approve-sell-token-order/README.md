@@ -2,9 +2,9 @@
 title: Approving sell token
 ---
 
-For an order to be tradeable on CoW Protocol, the owner needs to approve the [GPv2VaultRelayer](https://beta.docs.cow.fi/cow-protocol/reference/contracts/core/vault-relayer) to spend the token they want to trade.
+For an order to be tradeable on CoW Protocol, the owner needs to approve the [GPv2VaultRelayer](https://docs.cow.fi/cow-protocol/reference/contracts/core/vault-relayer) to spend the token they want to trade.
 
-> A list of the core deployed contracts can be found [here](https://beta.docs.cow.fi/cow-protocol/reference/contracts/core).
+> A list of the core deployed contracts can be found [here](https://docs.cow.fi/cow-protocol/reference/contracts/core).
 
 ## Contract (token) interaction
 
@@ -21,7 +21,7 @@ Additionally, if we want to **make a transaction**, we must have a _signer_ (e.g
 
 The contract to be interacted with is the token we want to trade. In this tutorial, we use the [wxDAI](https://gnosisscan.io/token/0xe91d153e0b41518a2ce8dd3d7944fa863463a97d) token, and assign it's address `0xe91d153e0b41518a2ce8dd3d7944fa863463a97d` to a `const`.
 
-At the same time, we assign the address of the [GPv2VaultRelayer](https://beta.docs.cow.fi/cow-protocol/reference/contracts/core/vault-relayer) to a `const`:
+At the same time, we assign the address of the [GPv2VaultRelayer](https://docs.cow.fi/cow-protocol/reference/contracts/core/vault-relayer) to a `const`:
 
 ```typescript
 /// file: run.ts

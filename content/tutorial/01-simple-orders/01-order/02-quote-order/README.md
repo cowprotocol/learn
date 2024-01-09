@@ -2,11 +2,11 @@
 title: Quoting
 ---
 
-OK, so you're wanting to trade some tokens on CoW Protocol. Great! But before we do that, let's get a quote first so we know what we're getting into. We get quotes using the [Order book API](https://beta.docs.cow.fi/cow-protocol/tutorials/arbitrate/orderbook).
+OK, so you're wanting to trade some tokens on CoW Protocol. Great! But before we do that, let's get a quote first so we know what we're getting into. We get quotes using the [Order book API](https://docs.cow.fi/cow-protocol/tutorials/arbitrate/orderbook).
 
 ## API
 
-The CoW Protocol API is [documented in swagger](https://beta.docs.cow.fi/cow-protocol/reference/apis/orderbook). Using API endpoints can be a bit tricky, so we've exposed all the settings that you need (including things like rate limiters so you don't get blocked) in a simple to use library: `@cowprotocol/cow-sdk`.
+The CoW Protocol API is [documented in swagger](https://docs.cow.fi/cow-protocol/reference/apis/orderbook). Using API endpoints can be a bit tricky, so we've exposed all the settings that you need (including things like rate limiters so you don't get blocked) in a simple to use library: `@cowprotocol/cow-sdk`.
 
 To install it, run: `npm install @cowprotocol/cow-sdk`
 
@@ -157,4 +157,4 @@ In the above case, we can see that:
 - the `feeAmount` is `1881812051493698` atomic units of `wxDAI` (which is `0.001881812051493698` `wxDAI`)
 - the `kind` is `sell`
 
-The above `OrderQuoteResponse` object actually maps to the [`GPv2Order.Data`](https://beta.docs.cow.fi/cow-protocol/reference/contracts/core/settlement#gpv2orderdata-struct) struct for the smart contract, so this is what we will sign in the [next tutorial](/tutorial/sign-order) for our swap.
+The above `OrderQuoteResponse` object actually maps to the [`GPv2Order.Data`](https://docs.cow.fi/cow-protocol/reference/contracts/core/settlement#gpv2orderdata-struct) struct for the smart contract, so this is what we will sign in the [next tutorial](/tutorial/sign-order) for our swap.

@@ -4,9 +4,9 @@ title: Cancelling on-chain
 
 The preferred way to cancel an order is off-chain, notably because it is free. However, this places trust in the API to cancel the order. If you want to enforce the cancellation of an order, you can do so on-chain. This will cost gas, but will ensure that the order is cancelled.
 
-To cancel, we will send an `invalidateOrder` transaction to the [`GPv2Settlement`](https://beta.docs.cow.fi/cow-protocol/reference/contracts/core/settlement) contract.
+To cancel, we will send an `invalidateOrder` transaction to the [`GPv2Settlement`](https://docs.cow.fi/cow-protocol/reference/contracts/core/settlement) contract.
 
-> A list of the core deployed contracts can be found [here](https://beta.docs.cow.fi/cow-protocol/reference/contracts/core).
+> A list of the core deployed contracts can be found [here](https://docs.cow.fi/cow-protocol/reference/contracts/core).
 
 ## Contract (`GPv2Settlement`) interaction
 
@@ -21,7 +21,7 @@ Additionally, if we want to **make a transaction**, we must have a _signer_ (e.g
 
 ### Contract address and `orderUid`
 
-The contract to be interacted with is the [`GPv2Settlement`](https://beta.docs.cow.fi/cow-protocol/reference/contracts/core/settlement) contract. We assign it's address `0x9008D19f58AAbD9eD0D60971565AA8510560ab41` to a `const`.
+The contract to be interacted with is the [`GPv2Settlement`](https://docs.cow.fi/cow-protocol/reference/contracts/core/settlement) contract. We assign it's address `0x9008D19f58AAbD9eD0D60971565AA8510560ab41` to a `const`.
 
 At the same time, we assign the `orderUid` of the order we want to cancel to a `const`.
 

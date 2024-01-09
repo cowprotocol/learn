@@ -13,7 +13,7 @@ We will use the second method in this tutorial.
 
 ## Reconstructing the `EthFlowOrder.Data` struct
 
-From the [`EthFlowOrder.Data` struct](https://beta.docs.cow.fi/cow-protocol/reference/contracts/periphery/eth-flow#ethfloworderdata) technical reference, we can see that the struct's fields are a subset of the [`GPv2Order.Data` struct](https://beta.docs.cow.fi/cow-protocol/reference/contracts/core/settlement#gpv2orderdata-struct) and an additional `int64` field called `quoteId`.
+From the [`EthFlowOrder.Data` struct](https://docs.cow.fi/cow-protocol/reference/contracts/periphery/eth-flow#ethfloworderdata) technical reference, we can see that the struct's fields are a subset of the [`GPv2Order.Data` struct](https://docs.cow.fi/cow-protocol/reference/contracts/core/settlement#gpv2orderdata-struct) and an additional `int64` field called `quoteId`.
 
 Fortunately, in the `OrderPlacement` event log, we can see that the `order` field is the `GPv2Order.Data` struct, and the `data` field is a solidity-packed tuple containing the `quoteId` field and the `validTo` field. This means that we can reconstruct the `EthFlowOrder.Data` struct from the `OrderPlacement` event log!
 

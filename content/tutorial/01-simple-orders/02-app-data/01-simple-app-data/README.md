@@ -6,7 +6,7 @@ So, we have created a simple order in the previous section, but what if you're a
 
 ## `app-data` SDK
 
-The `app-data` is documented in [JSON Schema](https://beta.docs.cow.fi/cow-protocol/reference/core/intents/app-data#schema). Writing to a schema is not very convenient, so we have a special SDK for that. It's called the `app-data` SDK.
+The `app-data` is documented in [JSON Schema](https://docs.cow.fi/cow-protocol/reference/core/intents/app-data#schema). Writing to a schema is not very convenient, so we have a special SDK for that. It's called the `app-data` SDK.
 
 To install it, run: `npm install @cowprotocol/app-data`
 

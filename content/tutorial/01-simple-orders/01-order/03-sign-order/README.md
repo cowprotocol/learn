@@ -6,7 +6,7 @@ Here we will build on the previous tutorial and sign the quote we got from the [
 
 ## Intents and signatures
 
-CoW Protocol uses [intents](https://beta.docs.cow.fi/cow-protocol/reference/core/intents) to represent orders. An intent is a [signed message](https://beta.docs.cow.fi/cow-protocol/reference/core/signing-schemes). Most intents are signed using the [EIP-712](https://eips.ethereum.org/EIPS/eip-712) signing scheme, and this is what we will use in this tutorial.
+CoW Protocol uses [intents](https://docs.cow.fi/cow-protocol/reference/core/intents) to represent orders. An intent is a [signed message](https://docs.cow.fi/cow-protocol/reference/core/signing-schemes). Most intents are signed using the [EIP-712](https://eips.ethereum.org/EIPS/eip-712) signing scheme, and this is what we will use in this tutorial.
 
 ## Signing an order
 

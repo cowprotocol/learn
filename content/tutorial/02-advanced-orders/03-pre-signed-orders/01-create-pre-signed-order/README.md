@@ -6,9 +6,9 @@ There are two types of wallets:
  - EOA (externally owned account) wallets, which are controlled by a private key
  - Smart contract wallets, which are controlled by a smart contract
 
-Since smart contract wallets, such as [`Safe`](https://safe.global) are controlled by a smart contract, they can't sign transactions using [`EIP-712`](https://beta.docs.cow.fi/cow-protocol/reference/core/signing-schemes#eip-712). However, CoW Protocol supports smart contract wallets by allowing them to sign using:
-- [`EIP-1271`](https://beta.docs.cow.fi/cow-protocol/reference/core/signing-schemes#eip-1271)
-- [`PRESIGN`](https://beta.docs.cow.fi/cow-protocol/reference/core/signing-schemes#presign)
+Since smart contract wallets, such as [`Safe`](https://safe.global) are controlled by a smart contract, they can't sign transactions using [`EIP-712`](https://docs.cow.fi/cow-protocol/reference/core/signing-schemes#eip-712). However, CoW Protocol supports smart contract wallets by allowing them to sign using:
+- [`EIP-1271`](https://docs.cow.fi/cow-protocol/reference/core/signing-schemes#eip-1271)
+- [`PRESIGN`](https://docs.cow.fi/cow-protocol/reference/core/signing-schemes#presign)
 
 This tutorial will show you how to create an order using `PreSign` signing scheme, using a `Safe` wallet. It is assumed that you have a `Safe` wallet with at least one owner, and that the `owner` is the account you're using to run the tutorial.
 
@@ -35,7 +35,7 @@ To interact with a contract, we need to know:
 
 ### Contract address
 
-`GPv2Settlement` is a core contract and it's deployed on each supported network. Core contracts deployment addresses can be found in the [CoW Protocol docs](https://beta.docs.cow.fi/cow-protocol/reference/contracts/core).
+`GPv2Settlement` is a core contract and it's deployed on each supported network. Core contracts deployment addresses can be found in the [CoW Protocol docs](https://docs.cow.fi/cow-protocol/reference/contracts/core).
 
 This is such a common use case that the SDK provides an export for the `GPv2Settlement` contract address:
 

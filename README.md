@@ -33,3 +33,7 @@ Tutorials live inside `content`. Each tutorial consists of a `README.md`, which 
 ## Bumping tutorial dependencies
 
 Bump the dependency (for example `cow-sdk`) in both the root and the `content/common` `package.json`. In the root do `yarn` (to update `yarn.lock`), in `content/common` do `yarn` (to update `yarn.lock`).
+
+## Acknowledgements
+
+These tutorials build off of the excellent from the team who created the [SvelteKit tutorials](https://learn.svelte.dev/). Without their work, this would not have been possible.

@@ -36,4 +36,4 @@ Bump the dependency (for example `cow-sdk`) in both the root and the `content/co
 
 ## Acknowledgements
 
-These tutorials build off of the excellent from the team who created the [SvelteKit tutorials](https://learn.svelte.dev/). Without their work, this would not have been possible.
+These tutorials build off of the excellent work from the team who created the [SvelteKit tutorials](https://learn.svelte.dev/). Without their work, this would not have been possible.

@@ -6,9 +6,7 @@ export async function run(provider: Web3Provider): Promise<unknown> {
 
 	const tx = {
 		to: await signer.getAddress(),
-		value: utils.parseEther('0.01'),
-		maxPriorityFeePerGas: 0,
-		maxFeePerGas: utils.parseUnits('100', 'gwei')
+		value: utils.parseEther('0.01')
 	};
 
 	// Implement cancellation

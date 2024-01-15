@@ -17,7 +17,7 @@ Different endpoints with different protections are available:
 Additionally, there are a few request parameters you can set to fine-tune the behavior of the RPC:
 
 - `refundRecipient`: Which address should receive searcher rebates (defaults to target `tx.origin`)
-- `softcancel`: Whether 0 value transactions to self should be broadcasted or interpreted as cancellation of other pending transactions at that nonce
+- `softcancel`: Whether 0 value transactions to self should be broadcasted or interpreted as cancellation of other pending transactions at that nonce. Not available in `fast` endpoint.
 - `referrer`: Allows for order-flow attribution
 
 Depending on your choice you may end up with a URL like:

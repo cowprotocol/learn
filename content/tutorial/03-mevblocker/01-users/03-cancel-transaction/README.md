@@ -2,7 +2,7 @@
 title: Cancelling transactions
 ---
 
-If you want to cancel a pending MEV Blocker transaction without paying gas, you need to enable the `softcancel` feature (cf. [previous tutorial](tutorial/quote-connect)).
+If you want to cancel a pending MEV Blocker transaction without paying gas, you need to be connected to either the `noreverts` or `fullprivacy` endpoint and enable the `softcancel` feature flag (cf. [previous tutorial](tutorial/quote-connect)).
 
 Even when soft cancellations are disabled, you can cancel a transaction by sending another transaction with equal nonce but higher priority fee.
 However, this will cost you transaction fees.
@@ -45,6 +45,8 @@ We need to send both transactions in short concession in order for the cancellat
 There is always a chance that due to latency the cancellation arrives too late and builders end up including the target transaction.
 It might therefore take multiple attempts to demonstrate the exact behavior.
 
+> Metamask may sometimes ask you to sign the second transaction first. Make sure you sign the transactions with non-zero value first!
+
 To sign both transactions using the same popup we await for both `sendTransaction` calls in parallel and return the target transaction hash to observe its status via the API:
 
 ```typescript
@@ -55,3 +57,5 @@ const [transactionResponse, _] = await Promise.all([
 ]);
 return `Cancellation sent! Check https://rpc.mevblocker.io/tx/${transactionResponse.hash}`;
 ```
+
+If all goes well the target transaction should show its status as `FAILED`.

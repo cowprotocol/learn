@@ -2,7 +2,7 @@
 title: Cancelling transactions
 ---
 
-If you want to cancel a pending MEV Blocker transaction without paying gas, you need to be connected to either the `noreverts` or `fullprivacy` endpoint and enable the `softcancel` feature flag (cf. [previous tutorial](tutorial/quote-connect)).
+If you want to cancel a pending MEV Blocker transaction without paying gas, you need to be connected to either the `noreverts` or `fullprivacy` endpoint and enable the `softcancel` feature flag (cf. [previous tutorial](/tutorial/connect)).
 
 Even when soft cancellations are disabled, you can cancel a transaction by sending another transaction with equal nonce but higher priority fee.
 However, this will cost you transaction fees.

@@ -107,7 +107,8 @@ Now we have everything we need to execute the `approve` function. We will now gi
 ```typescript
 /// file: run.ts
 import type { Web3Provider } from '@ethersproject/providers';
-+++import { Contract, ethers } from '@ethersproject/contracts';+++
++++import { Contract } from '@ethersproject/contracts';+++
++++import { ethers } from 'ethers';+++
 
 export async function run(provider: Web3Provider): Promise<unknown> {
   // ...

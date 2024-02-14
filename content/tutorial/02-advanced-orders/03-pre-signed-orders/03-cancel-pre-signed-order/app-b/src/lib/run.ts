@@ -32,7 +32,7 @@ export async function run(provider: Web3Provider): Promise<unknown> {
   const SAFE_TRANSACTION_SERVICE_URL: Record<SupportedChainId, string> = {
     [SupportedChainId.MAINNET]: 'https://safe-transaction-mainnet.safe.global',
     [SupportedChainId.GNOSIS_CHAIN]: 'https://safe-transaction-gnosis-chain.safe.global',
-    [SupportedChainId.GOERLI]: 'https://safe-transaction-goerli.safe.global',
+    [SupportedChainId.SEPOLIA]: 'https://safe-transaction-sepolia.safe.global',
   }
   
   const getSafeSdkAndKit = async (safeAddress: string) => {

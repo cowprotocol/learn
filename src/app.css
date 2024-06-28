@@ -117,11 +117,11 @@ html body a.home-link {
 }
 
 html body.dark #cow-logo>img {
-  content: url(../static/logo-light.svg);
+  content: url(../static/logo-light-full.svg);
 }
 
 html body.light #cow-logo>img {
-  content: url(../static/logo-dark.svg);
+  content: url(../static/logo-dark-full.svg);
 }
 
 #cow-logo-small {

@@ -29,7 +29,7 @@
 
 .cm-editor .cm-lineNumbers {
 	flex: 1;
-	color: #237893;
+	color: grey;
 }
 
 .cm-editor .cm-foldGutter {

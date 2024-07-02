@@ -16,14 +16,14 @@
 		<svelte:fragment slot="home-large">
 
 			<span id="cow-logo">
-				<img src="/cow_logo_dark.svg" alt="CoW Logo" />
+				<img src="/logo-dark-full.svg" alt="CoW Logo" />
 				tutorials
 			</span>
 		</svelte:fragment>
 
 		<svelte:fragment slot="home-small">
 			<span id="cow-logo-small">
-				<img src="/cow_icon_dark.svg" alt="CoW Logo" />
+				<img src="/logo-dark.svg" alt="CoW Logo" />
 			</span>
 
 		</svelte:fragment>

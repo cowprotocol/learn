@@ -20,12 +20,18 @@ For signing, we will use the `UnsignedOrder` type from the `SDK`, along with the
 /// file: run.ts
 import type { Web3Provider } from '@ethersproject/providers';
 +++import { OrderBookApi, SupportedChainId, OrderQuoteRequest, OrderQuoteSideKindSell, OrderSigningUtils, UnsignedOrder } from '@cowprotocol/cow-sdk';+++
++++import { BigNumber } from 'ethers';+++
+
+
+    
 
 export async function run(provider: Web3Provider): Promise<unknown> {
   // ...
 
   const order: UnsignedOrder = {
     ...quote,
+    sellAmount: BigNumber.from(quote.sellAmount).add(BigNumber.from(quote.feeAmount)).toString(), // Quoted sellAmount must be added to quoted feeAmount
+    feeAmount: '0', // and feeAmount must be set to 0
     receiver: ownerAddress, // required due type mismatch
   }
 }

@@ -1,5 +1,6 @@
-import type { Web3Provider } from '@ethersproject/providers'
-import { OrderBookApi, SupportedChainId, OrderQuoteRequest, OrderQuoteSideKindSell, OrderSigningUtils, UnsignedOrder } from '@cowprotocol/cow-sdk'
+import { OrderBookApi, OrderQuoteRequest, OrderQuoteSideKindSell, OrderSigningUtils, SupportedChainId, UnsignedOrder } from '@cowprotocol/cow-sdk';
+import type { Web3Provider } from '@ethersproject/providers';
+import { BigNumber } from 'ethers';
 
 export async function run(provider: Web3Provider): Promise<unknown> {
     const chainId = +(await provider.send('eth_chainId', []));
@@ -27,8 +28,12 @@ export async function run(provider: Web3Provider): Promise<unknown> {
 
     const { quote } = await orderBookApi.getQuote(quoteRequest);
 
+    // Quoted sellAmount must be added to quoted feeAmount, and feeAmount must be set to 0
+
     const order: UnsignedOrder = {
       ...quote,
+      sellAmount: BigNumber.from(quote.sellAmount).add(BigNumber.from(quote.feeAmount)).toString(),
+      feeAmount: '0',
       receiver: ownerAddress,
     }
 

@@ -20,6 +20,8 @@ export async function run(provider: Web3Provider): Promise<unknown> {
         const orderId = await orderBookApi.sendOrder({
             ...quote,
             ...orderSigningResult,
+            sellAmount: order.sellAmount, // replace quote sellAmount with signed order sellAmount, which is equal to original sellAmount
+            feeAmount: order.feeAmount, // replace quote feeAmount with signed order feeAmount, which is 0
             signingScheme: orderSigningResult.signingScheme as unknown as SigningScheme
         })
   

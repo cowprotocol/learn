@@ -1,5 +1,5 @@
-import type { Web3Provider } from '@ethersproject/providers'
-import { OrderBookApi, SupportedChainId, OrderQuoteRequest, OrderQuoteSideKindSell, OrderSigningUtils, UnsignedOrder, SigningScheme } from '@cowprotocol/cow-sdk'
+import { OrderBookApi, OrderQuoteRequest, OrderQuoteSideKindSell, OrderSigningUtils, SigningScheme, SupportedChainId, UnsignedOrder } from '@cowprotocol/cow-sdk';
+import type { Web3Provider } from '@ethersproject/providers';
 
 export async function run(provider: Web3Provider): Promise<unknown> {
     const chainId = +(await provider.send('eth_chainId', []));
@@ -27,8 +27,16 @@ export async function run(provider: Web3Provider): Promise<unknown> {
 
     const { quote } = await orderBookApi.getQuote(quoteRequest);
 
+    // Use the original sellAmount, which is equal to quoted sellAmount added to quoted feeAmount
+    // sellAmount === BigNumber.from(quote.sellAmount).add(BigNumber.from(quote.feeAmount)).toString()
+
+    // And feeAmount must be set to 0
+    const feeAmount = '0'
+
     const order: UnsignedOrder = {
       ...quote,
+      sellAmount,
+      feeAmount,
       receiver: ownerAddress,
     }
 
@@ -38,6 +46,8 @@ export async function run(provider: Web3Provider): Promise<unknown> {
         const orderId = await orderBookApi.sendOrder({
             ...quote,
             ...orderSigningResult,
+            sellAmount: order.sellAmount, // replace quote sellAmount with signed order sellAmount, which is equal to original sellAmount
+            feeAmount: order.feeAmount, // replace quote feeAmount with signed order feeAmount, which is 0
             signingScheme: orderSigningResult.signingScheme as unknown as SigningScheme
         })
     

@@ -21,13 +21,24 @@ For signing, we will use the `UnsignedOrder` type from the `SDK`, along with the
 import type { Web3Provider } from '@ethersproject/providers';
 +++import { OrderBookApi, SupportedChainId, OrderQuoteRequest, OrderQuoteSideKindSell, OrderSigningUtils, UnsignedOrder } from '@cowprotocol/cow-sdk';+++
 
+
+    
+
 export async function run(provider: Web3Provider): Promise<unknown> {
   // ...
 
-  const order: UnsignedOrder = {
-    ...quote,
-    receiver: ownerAddress, // required due type mismatch
-  }
+    // Use the original sellAmount, which is equal to quoted sellAmount added to quoted feeAmount
+    // sellAmount === BigNumber.from(quote.sellAmount).add(BigNumber.from(quote.feeAmount)).toString()
+
+    // And feeAmount must be set to 0
+    const feeAmount = '0'
+
+    const order: UnsignedOrder = {
+      ...quote,
+      sellAmount,
+      feeAmount,
+      receiver: ownerAddress,
+    }
 }
 ```
 

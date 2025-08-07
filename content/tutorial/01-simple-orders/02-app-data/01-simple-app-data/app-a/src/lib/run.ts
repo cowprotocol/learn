@@ -1,5 +1,21 @@
-import type { Web3Provider } from '@ethersproject/providers'
+import type { Web3Provider } from '@ethersproject/providers';
+import { MetadataApi, setGlobalAdapter } from '@cowprotocol/cow-sdk';
+import { EthersV5Adapter } from '@cowprotocol/sdk-ethers-v5-adapter';
+
+// Helper function to setup adapter (will be used in all tutorials from now on)
+function setupAdapter(provider: Web3Provider) {
+	const signer = provider.getSigner();
+	const adapter = new EthersV5Adapter({ provider, signer });
+	setGlobalAdapter(adapter);
+	return { signer, adapter };
+}
 
 export async function run(provider: Web3Provider): Promise<unknown> {
-  // TODO: Implement
+	setupAdapter(provider);
+	// MetadataApi now requires the global adapter but we dont need to pass it
+	// because we are using the global adapter setup in the setupAdapter function
+	const metadataApi = new MetadataApi();
+
+	// TODO: Implement
+	return {};
 }

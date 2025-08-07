@@ -1,5 +1,5 @@
 import type { Web3Provider } from '@ethersproject/providers'
-import { setGlobalAdapter } from '@cowprotocol/cow-sdk'
+import { setGlobalAdapter , getGlobalAdapter} from '@cowprotocol/cow-sdk'
 import { EthersV5Adapter } from '@cowprotocol/sdk-ethers-v5-adapter'
 
 export async function run(provider: Web3Provider): Promise<unknown> {
@@ -14,10 +14,11 @@ export async function run(provider: Web3Provider): Promise<unknown> {
   const chainId = await adapter.getChainId()
   const address = await adapter.signer.getAddress()
 
+  const globalAdapter = getGlobalAdapter()
+
   return {
-    adapterType: "EthersV5Adapter",
+    globalAdapter,
     chainId,
     address,
-    message: "Global adapter configured! All SDK classes will now use EthersV5."
   }
 }

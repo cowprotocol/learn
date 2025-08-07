@@ -26,13 +26,12 @@ For this tutorial, we will use the [`production` version of the contract](https:
 ```typescript
 /// file: run.ts
 import type { Web3Provider } from '@ethersproject/providers';
-import { SupportedChainId } from '@cowprotocol/cow-sdk';
-import { MetadataApi, latest } from '@cowprotocol/app-data';
+import { MetadataApi, latest, SupportedChainId } from '@cowprotocol/cow-sdk';
 
 export async function run(provider: Web3Provider): Promise<unknown> {
-  // ...
-  const ethFlowAddress = '0x40A50cf069e992AA4536211B23F286eF88752187';
-  // ...
+	// ...
+	const ethFlowAddress = '0x40A50cf069e992AA4536211B23F286eF88752187';
+	// ...
 }
 ```
 
@@ -51,8 +50,7 @@ Now that we have the ABI, we can import it into our `run.ts` file:
 ```typescript
 /// file: run.ts
 import type { Web3Provider } from '@ethersproject/providers';
-import { SupportedChainId } from '@cowprotocol/cow-sdk';
-import { MetadataApi, latest } from '@cowprotocol/app-data';
+import { MetadataApi, latest, SupportedChainId} from '@cowprotocol/cow-sdk';
 +++import abi from './ethFlow.abi.json';+++
 
 export async function run(provider: Web3Provider): Promise<unknown> {
@@ -68,8 +66,7 @@ Now that we have the contract address and the ABI, we can connect to the contrac
 /// file: run.ts
 import type { Web3Provider } from '@ethersproject/providers';
 +++import { Contract } from 'ethers';+++
-import { SupportedChainId } from '@cowprotocol/cow-sdk';
-import { MetadataApi, latest } from '@cowprotocol/app-data';
+import { MetadataApi, latest, SupportedChainId} from '@cowprotocol/cow-sdk';
 import abi from './ethFlow.abi.json';
 
 export async function run(provider: Web3Provider): Promise<unknown> {
@@ -90,15 +87,16 @@ In this tutorial we are aiming to swap 1 `xDAI` for `COW` on Gnosis Chain. When 
 ```typescript
 /// file: run.ts
 import type { Web3Provider } from '@ethersproject/providers';
-+++import {+++
-+++  SupportedChainId,+++
-+++  OrderBookApi,+++
-+++  UnsignedOrder,+++
-+++  SigningScheme,+++
-+++  OrderQuoteRequest,+++
-+++  OrderQuoteSideKindSell,+++
-+++} from '@cowprotocol/cow-sdk';+++
-import { MetadataApi, latest } from '@cowprotocol/app-data';
+import {
+  SupportedChainId,
+  OrderBookApi,
+  UnsignedOrder,
+  SigningScheme,
+  OrderQuoteRequest,
+  OrderQuoteSideKindSell,
+  MetadataApi,
+  latest
+} from '@cowprotocol/cow-sdk';
 import abi from './ethFlow.abi.json';
 
 export async function run(provider: Web3Provider): Promise<unknown> {

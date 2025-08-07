@@ -26,12 +26,24 @@ For this tutorial, we will use the [`production` version of the contract](https:
 ```typescript
 /// file: run.ts
 import type { Web3Provider } from '@ethersproject/providers';
-import { MetadataApi, latest, SupportedChainId } from '@cowprotocol/cow-sdk';
+import { SupportedChainId, MetadataApi, latest, setGlobalAdapter } from '@cowprotocol/cow-sdk';
+import { EthersV5Adapter } from '@cowprotocol/sdk-ethers-v5-adapter';
+
+// Helper function to setup adapter
+function setupAdapter(provider: Web3Provider) {
+  const signer = provider.getSigner();
+  const adapter = new EthersV5Adapter({ provider, signer });
+  setGlobalAdapter(adapter);
+  return { signer, adapter };
+}
 
 export async function run(provider: Web3Provider): Promise<unknown> {
-	// ...
-	const ethFlowAddress = '0x40A50cf069e992AA4536211B23F286eF88752187';
-	// ...
+  // Setup adapter for MetadataApi
+  const { signer } = setupAdapter(provider);
+  
+  // ...
+  const ethFlowAddress = '0x40A50cf069e992AA4536211B23F286eF88752187';
+  // ...
 }
 ```
 
@@ -44,8 +56,6 @@ To do so:
 1. Copy the ABI from [Gnosisscan](https://gnosisscan.io/address/0x40A50cf069e992AA4536211B23F286eF88752187#code)
 2. Create a new file `ethFlow.abi.json` in the `src` folder
 3. Paste the ABI into the file
-
-Now that we have the ABI, we can import it into our `run.ts` file:
 
 ```typescript
 /// file: run.ts
@@ -145,6 +155,29 @@ Now that we have a quote, we can go about creating an `EthFlow` order. Unfortuna
 +++}+++
 
 export async function run(provider: Web3Provider): Promise<unknown> {
+  // ...
+}
+```
+
+### App data processing
+
+We'll use the updated `getAppDataInfo()` method to process our app data document, which returns the CID along with the hex and content:
+
+```typescript
+/// file: run.ts
+export async function run(provider: Web3Provider): Promise<unknown> {
+  const { signer } = setupAdapter(provider);
+  const metadataApi = new MetadataApi();
+
+  // Generate app data document
+  const appDataDoc = await metadataApi.generateAppDataDoc({
+    appCode,
+    environment,
+    metadata: { referrer, quote: quoteAppDoc, orderClass },
+  });
+
+  // Use updated API method
+  const { cid, appDataHex, appDataContent } = await metadataApi.getAppDataInfo(appDataDoc);
   // ...
 }
 ```

@@ -1,5 +1,10 @@
 import type { Web3Provider } from '@ethersproject/providers';
-import { SupportedChainId, MetadataApi, latest, setGlobalAdapter } from '@cowprotocol/cow-sdk';
+import {
+	SupportedChainId,
+	MetadataApi,
+	latest,
+	setGlobalAdapter
+} from '@cowprotocol/cow-sdk';
 import { EthersV5Adapter } from '@cowprotocol/sdk-ethers-v5-adapter';
 
 // Helper function to setup adapter

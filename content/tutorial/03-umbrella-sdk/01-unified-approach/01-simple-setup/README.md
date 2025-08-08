@@ -85,6 +85,7 @@ const signature = await cowSdk.orderSigning.signOrder(order, chainId, signer)
 Example output:
 
 ```json
+/// file: output.json
 {
 	"cowSdkInitialized": true,
 	"availableModules": {

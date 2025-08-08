@@ -97,6 +97,7 @@ const signingMetadata = new MetadataApi(signingAdapter);
 
 Example output:
 ```json
+/// file: output.json
 {
   "orderBook": {
     "uid": "0x8464af...",

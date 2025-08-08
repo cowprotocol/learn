@@ -142,6 +142,7 @@ export async function run(provider: Web3Provider): Promise<unknown> {
 
 Example output:
 ```json
+/// file: output.json
 {
   "appData": {
     "appDataHex": "0xe269b..."

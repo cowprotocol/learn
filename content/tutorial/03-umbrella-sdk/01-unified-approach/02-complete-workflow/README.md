@@ -102,6 +102,7 @@ To run the code, press the "Run" button in the bottom right panel.
 Example output:
 
 ```json
+/// file: output.json
 {
 	"appDataHash": "0xe269b...",
 	"expectedBuyAmount": "400000000000000000000",

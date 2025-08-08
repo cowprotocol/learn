@@ -19,6 +19,7 @@ While these tutorials use **Ethers v5**, here's how you would initialize each ad
 
 ### EthersV5 Adapter
 ```typescript
+/// file: run.ts
 import { setGlobalAdapter } from '@cowprotocol/cow-sdk'
 import { EthersV5Adapter } from '@cowprotocol/sdk-ethers-v5-adapter'
 import { ethers } from 'ethers'
@@ -32,6 +33,7 @@ setGlobalAdapter(adapter)
 
 ### EthersV6 Adapter  
 ```typescript
+/// file: run.ts
 import { setGlobalAdapter } from '@cowprotocol/cow-sdk'
 import { EthersV6Adapter } from '@cowprotocol/sdk-ethers-v6-adapter'
 import { ethers } from 'ethers' // v6
@@ -45,6 +47,7 @@ setGlobalAdapter(adapter)
 
 ### Viem Adapter
 ```typescript
+/// file: run.ts
 import { setGlobalAdapter } from '@cowprotocol/cow-sdk'
 import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter'
 import { createWalletClient, custom } from 'viem'
@@ -66,6 +69,7 @@ setGlobalAdapter(adapter)
 Different Ethereum libraries have different APIs:
 
 ```typescript
+/// file: run.ts
 // Ethers v5
 const provider = new ethers.providers.Web3Provider(window.ethereum)
 const signer = provider.getSigner()
@@ -96,6 +100,7 @@ This means you set up your preferred Ethereum library once, and all SDK componen
 For these tutorials, we'll use **Ethers v5**:
 
 ```typescript
+/// file: run.ts
 import { setGlobalAdapter } from '@cowprotocol/cow-sdk'
 import { EthersV5Adapter } from '@cowprotocol/sdk-ethers-v5-adapter'
 
@@ -117,6 +122,7 @@ setGlobalAdapter(adapter)
 If you need to change the signer (e.g., user switches accounts), you can update it:
 
 ```typescript
+/// file: run.ts
 // Update signer without recreating the adapter
 const newSigner = provider.getSigner()
 adapter.setSigner(newSigner)
@@ -147,6 +153,7 @@ When running the script, we may be asked to connect a wallet. We can use Rabby f
 An example output should look like:
 
 ```json
+/// file: output.json
 {
     "adapterType": "EthersV5Adapter",
     "chainId": 100,

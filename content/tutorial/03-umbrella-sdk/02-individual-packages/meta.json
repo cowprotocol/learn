@@ -1,0 +1,8 @@
+{
+	"title": "Individual SDK Packages",
+	"scope": {
+		"prefix": "/src/lib/",
+		"name": "src"
+	},
+	"focus": "/src/lib/run.ts"
+}

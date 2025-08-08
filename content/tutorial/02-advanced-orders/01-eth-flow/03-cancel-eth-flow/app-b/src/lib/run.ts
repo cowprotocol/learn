@@ -51,7 +51,7 @@ export async function run(provider: Web3Provider): Promise<unknown> {
             buyToken: order.buyToken,
             sellAmount: order.sellAmount.toString(),
             buyAmount: order.buyAmount.toString(),
-            receiver: order.receiver, 
+            receiver: order.receiver,
             appData: order.appData.toString(),
             feeAmount: order.feeAmount.toString(),
             partiallyFillable: order.partiallyFillable,

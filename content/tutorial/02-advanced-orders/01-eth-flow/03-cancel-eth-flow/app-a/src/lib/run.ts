@@ -27,4 +27,5 @@ export async function run(provider: Web3Provider): Promise<unknown> {
     }
 
     // TODO: Implement
+    return {}
 }

@@ -13,10 +13,15 @@ In doing so, we will be making use of:
 
 We will start from the basic setup from the [submit order](/tutorial/submit-order) tutorial and the [simple app data](/tutorial/simple-app-data) tutorial. This has been populated in the code editor for you.
 
+The key components we'll use are:
+
+- `OrderBookApi` for getting quotes and submitting orders
+- `MetadataApi` for creating app data documents (uses the configured adapter automatically)
+- `OrderSigningUtils` for signing orders
 
 ### Quoting with app data
 
-The keen eye-ed among you will notice that `appDataHex` and `appDataContent` are not used. Let's fix that. When we request a quote, we will pass `appDataHex` and `appDataContent` to the API. This allows the API to:
+The keen eye-ed among you will notice that `appDataHex` and `appDataContent` are not used in basic order creation. Let's fix that. When we request a quote, we will pass `appData` and `appDataHash` to the API. This allows the API to:
 
 - validate the app data document and its hash (`appDataHex`)
 - wrap the app data into the response object
@@ -24,9 +29,13 @@ The keen eye-ed among you will notice that `appDataHex` and `appDataContent` are
 
 ```typescript
 /// file: run.ts
-// ...
+// After generating the app data document...
 export async function run(provider: Web3Provider): Promise<unknown> {
-    // ...
+    // Setup adapter first
+    const { signer } = setupAdapter(provider)
+
+    // Create app data document
+    const { cid, appDataHex, appDataContent } = await metadataApi.getAppDataInfo(appDataDoc)
 
     const quoteRequest: OrderQuoteRequest = {
         sellToken,
@@ -57,8 +66,25 @@ export async function run(provider: Web3Provider): Promise<unknown> {
         receiver: ownerAddress,
         +++appData: appDataHex,+++
     }
+
+    // OrderSigningUtils automatically uses the configured adapter
+    const orderSigningResult = await OrderSigningUtils.signOrder(order, chainId, signer)
     // ...
 }
+```
+
+### Processing app data
+
+Note that we're using the updated `getAppDataInfo()` method instead of the deprecated `appDataToCid()`. This method returns:
+
+- `cid` - the content identifier for the document
+- `appDataHex` - the hash to use in the order's `appData` field
+- `appDataContent` - the stringified document content
+
+```typescript
+/// file: run.ts
+// Use the updated API method
+const { cid, appDataHex, appDataContent } = await metadataApi.getAppDataInfo(appDataDoc);
 ```
 
 ## Run the code

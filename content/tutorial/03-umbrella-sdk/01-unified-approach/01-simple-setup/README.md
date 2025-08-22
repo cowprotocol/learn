@@ -21,18 +21,18 @@ import { CowSdk, SupportedChainId } from '@cowprotocol/cow-sdk';
 import { EthersV5Adapter } from '@cowprotocol/sdk-ethers-v5-adapter';
 
 export async function run(provider: Web3Provider): Promise<unknown> {
-	const signer = provider.getSigner();
-	const adapter = new EthersV5Adapter({ provider, signer });
+    const signer = provider.getSigner();
+    const adapter = new EthersV5Adapter({ provider, signer });
 
-	// Initialize the unified SDK
-	const cowSdk = new CowSdk({
-		adapter,
-		chainId: SupportedChainId.GNOSIS_CHAIN,
-		env: 'prod' // or 'staging'
-	});
+    // Initialize the unified SDK
+    const cowSdk = new CowSdk({
+        adapter,
+        chainId: SupportedChainId.GNOSIS_CHAIN,
+        env: 'prod' // or 'staging'
+    });
 
-	// Now you have access to all modules!
-	// ...
+    // Now you have access to all modules!
+    // ...
 }
 ```
 
@@ -87,12 +87,12 @@ Example output:
 ```json
 /// file: output.json
 {
-	"cowSdkInitialized": true,
-	"availableModules": {
-		"orderBook": true,
-		"metadataApi": true,
-		"orderSigning": true,
-		"subgraph": true
-	}
+    "cowSdkInitialized": true,
+    "availableModules": {
+        "orderBook": true,
+        "metadataApi": true,
+        "orderSigning": true,
+        "subgraph": true
+    }
 }
 ```

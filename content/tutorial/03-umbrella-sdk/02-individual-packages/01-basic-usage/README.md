@@ -44,6 +44,9 @@ export async function run(provider: Web3Provider): Promise<unknown> {
   const signer = provider.getSigner();
   const adapter = new EthersV5Adapter({ provider, signer });
 
+  const chainId = SupportedChainId.GNOSIS_CHAIN;
+  const orderUid = '';
+
   // Initialize packages individually
   const orderBookApi = new OrderBookApi({ chainId });
   const metadataApi = new MetadataApi(adapter);

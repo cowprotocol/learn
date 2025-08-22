@@ -16,8 +16,15 @@ export async function run(provider: Web3Provider): Promise<unknown> {
 
   const globalAdapter = getGlobalAdapter()
 
+  const adapterInfo = globalAdapter ? {
+    type: globalAdapter.constructor.name,
+    hasSigner: !!globalAdapter.signer,
+    adapterChainId: await globalAdapter.getChainId(),
+  } : null
+
   return {
-    globalAdapter,
+    globalAdapterConfigured: !!globalAdapter,
+    adapterInfo,
     chainId,
     address,
   }

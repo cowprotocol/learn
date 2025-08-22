@@ -52,7 +52,6 @@ export async function run(provider: Web3Provider): Promise<unknown> {
 		const order: UnsignedOrder = {
 			...quote,
 			sellAmount: '1000000000000000000',
-			feeAmount: '0',
 			receiver: ownerAddress,
 			appData: appDataHex
 		};

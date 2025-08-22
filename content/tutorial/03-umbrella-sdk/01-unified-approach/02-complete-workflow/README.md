@@ -13,13 +13,13 @@ Now that we understand the CowSdk basics, let's build a complete trading workflo
 ```typescript
 /// file: run.ts
 const appDataDoc = await cowSdk.metadataApi.generateAppDataDoc({
-	appCode: 'Decentralized CoW',
-	environment: 'production',
-	metadata: {
-		referrer: { address: '0xcA771...' },
-		quote: { slippageBips: 50 } as latest.Quote,
-		orderClass: { orderClass: 'market' } as latest.OrderClass
-	}
+    appCode: 'Decentralized CoW',
+    environment: 'production',
+    metadata: {
+        referrer: { address: '0xcA771...' },
+        quote: { slippageBips: 50 } as latest.Quote,
+        orderClass: { orderClass: 'market' } as latest.OrderClass
+    }
 });
 
 const { appDataHex } = await cowSdk.metadataApi.getAppDataInfo(appDataDoc);
@@ -30,14 +30,14 @@ const { appDataHex } = await cowSdk.metadataApi.getAppDataInfo(appDataDoc);
 ```typescript
 /// file: run.ts
 const { quote } = await cowSdk.orderBook.getQuote({
-	sellToken: '0xe91d153e0b41518a2ce8dd3d7944fa863463a97d', // wxDAI
-	buyToken: '0x177127622c4A00F3d409B75571e12cB3c8973d3c', // COW
-	from: ownerAddress,
-	receiver: ownerAddress,
-	sellAmountBeforeFee: '1000000000000000000', // 1 wxDAI
-	kind: OrderQuoteSideKindSell.SELL,
-	appData: appDataContent,
-	appDataHash: appDataHex
+    sellToken: '0xe91d153e0b41518a2ce8dd3d7944fa863463a97d', // wxDAI
+    buyToken: '0x177127622c4A00F3d409B75571e12cB3c8973d3c', // COW
+    from: ownerAddress,
+    receiver: ownerAddress,
+    sellAmountBeforeFee: '1000000000000000000', // 1 wxDAI
+    kind: OrderQuoteSideKindSell.SELL,
+    appData: appDataContent,
+    appDataHash: appDataHex
 });
 ```
 
@@ -46,11 +46,11 @@ const { quote } = await cowSdk.orderBook.getQuote({
 ```typescript
 /// file: run.ts
 const order: UnsignedOrder = {
-	...quote,
-	sellAmount: '1000000000000000000',
-	feeAmount: '0',
-	receiver: ownerAddress,
-	appData: appDataHex
+    ...quote,
+    sellAmount: '1000000000000000000',
+    feeAmount: '0',
+    receiver: ownerAddress,
+    appData: appDataHex
 };
 
 const orderSigningResult = await cowSdk.orderSigning.signOrder(order, chainId, signer);
@@ -104,9 +104,9 @@ Example output:
 ```json
 /// file: output.json
 {
-	"appDataHash": "0xe269b...",
-	"expectedBuyAmount": "400000000000000000000",
-	"signature": "0x98ac...",
-	"signingScheme": "eip712"
+    "appDataHash": "0xe269b...",
+    "expectedBuyAmount": "400000000000000000000",
+    "signature": "0x98ac...",
+    "signingScheme": "eip712"
 }
 ```

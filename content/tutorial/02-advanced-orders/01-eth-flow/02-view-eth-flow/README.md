@@ -62,16 +62,16 @@ Let's use a known transaction hash to extract the `GPv2Order.Data` struct from t
 
 ```typescript
 /// file: run.ts
-import type { Web3Provider } from '@ethersproject/providers'
-import { utils } from "ethers";
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import abi from './ethFlow.abi.json'
+import type { Web3Provider } from '@ethersproject/providers';
+import { utils } from 'ethers';
+import { SupportedChainId } from '@cowprotocol/cow-sdk';
+import abi from './ethFlow.abi.json';
 
 export async function run(provider: Web3Provider): Promise<unknown> {
-    // ...
+	// ...
 
-    const txHash = '0x04d05fc2c953cc63608c19a79869301d62b1f077e0f795f716619b21f693f00c';
-    const receipt = await provider.getTransactionReceipt(txHash);
+	const txHash = '0x04d05fc2c953cc63608c19a79869301d62b1f077e0f795f716619b21f693f00c';
+	const receipt = await provider.getTransactionReceipt(txHash);
 }
 ```
 
@@ -84,23 +84,22 @@ Now that we have the transaction receipt, we can extract the `OrderPlacement` ev
 // ...
 
 export async function run(provider: Web3Provider): Promise<unknown> {
-    // ...
+	// ...
 
-    const ethFlowOrderUids: string[] = receipt.logs
-        .reduce((orderIds, log) => {
-            if (log.address !== ethFlowAddress) {
-                return orderIds;
-            }
+	const ethFlowOrderUids: string[] = receipt.logs.reduce((orderIds, log) => {
+		if (log.address !== ethFlowAddress) {
+			return orderIds;
+		}
 
-            const parsedLog = iface.parseLog(log);
-            if (parsedLog.name === 'OrderPlacement') {
-                const [, order, ,] = parsedLog.args;
+		const parsedLog = iface.parseLog(log);
+		if (parsedLog.name === 'OrderPlacement') {
+			const [, order, ,] = parsedLog.args;
 
-                orderIds.push(ethFlowOrderUid(order));
-            }
-            
-            return orderIds;
-        }, []);
+			orderIds.push(ethFlowOrderUid(order));
+		}
+
+		return orderIds;
+	}, []);
 }
 ```
 

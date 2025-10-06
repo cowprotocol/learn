@@ -28,7 +28,7 @@ import { SupportedChainId, OrderBookApi } from '@cowprotocol/cow-sdk';
 export async function run(provider: Web3Provider): Promise<unknown> {
     // ...
 
-    const orderUid = `0x8464affce2df48b60f6976e51414dbc079e9c30ef64f4c1f78c7abe2c7f96a0c29104bb91ada737a89393c78335e48ff4708727e659523a1`
+    const orderUid = `0x8464affce2df48b60f6976e51414dbc079e9c30ef64f4c1f78c7abe2c7f96a0c29104bb91ada737a89393c78335e48ff4708727e659523a1`;
 
     // ...
 }
@@ -73,12 +73,12 @@ export async function run(provider: Web3Provider): Promise<unknown> {
     try {
         const cancellationsResult = await orderBookApi.sendSignedOrderCancellations({
             ...orderCancellationsSigningResult,
-            orderUids: [orderUid],
-        })
-    
-        return { cancellationsResult }
+            orderUids: [orderUid]
+        });
+
+        return { cancellationsResult };
     } catch (e) {
-        return e
+        return e;
     }
 }
 ```

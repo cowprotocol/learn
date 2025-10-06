@@ -11,24 +11,32 @@ Submitting orders to the API may very well result in an error. For this reason, 
 ```typescript
 /// file: run.ts
 import type { Web3Provider } from '@ethersproject/providers';
-+++import { OrderBookApi, SupportedChainId, OrderQuoteRequest, OrderQuoteSideKindSell, OrderSigningUtils, UnsignedOrder, SigningScheme } from '@cowprotocol/cow-sdk';+++
+import {
+	OrderBookApi,
+	SupportedChainId,
+	OrderQuoteRequest,
+	OrderQuoteSideKindSell,
+	OrderSigningUtils,
+	UnsignedOrder,
+	SigningScheme
+} from '@cowprotocol/cow-sdk';
 
 export async function run(provider: Web3Provider): Promise<unknown> {
-  // ...
+	// ...
 
-    try {
-        const orderId = await orderBookApi.sendOrder({
-            ...quote,
-            ...orderSigningResult,
-            sellAmount: order.sellAmount, // replace quote sellAmount with signed order sellAmount, which is equal to original sellAmount
-            feeAmount: order.feeAmount, // replace quote feeAmount with signed order feeAmount, which is 0
-            signingScheme: orderSigningResult.signingScheme as unknown as SigningScheme
-        })
-  
-        return { orderId }    
-    } catch (e) {
-        return e
-    }
+	try {
+		const orderId = await orderBookApi.sendOrder({
+			...quote,
+			...orderSigningResult,
+			sellAmount: order.sellAmount, // replace quote sellAmount with signed order sellAmount, which is equal to original sellAmount
+			feeAmount: order.feeAmount, // replace quote feeAmount with signed order feeAmount, which is 0
+			signingScheme: orderSigningResult.signingScheme as unknown as SigningScheme
+		});
+
+		return { orderId };
+	} catch (e) {
+		return e;
+	}
 }
 ```
 
@@ -49,7 +57,7 @@ An example `orderId` should look like:
 ```json
 /// file: output.json
 {
-    "orderId": "0xae842840f65743bc84190a68da1e4adf1771b242fa903b6c2e87bc5050e07c1329104bb91ada737a89393c78335e48ff4708727e65952d5e"
+	"orderId": "0xae842840f65743bc84190a68da1e4adf1771b242fa903b6c2e87bc5050e07c1329104bb91ada737a89393c78335e48ff4708727e65952d5e"
 }
 ```
 

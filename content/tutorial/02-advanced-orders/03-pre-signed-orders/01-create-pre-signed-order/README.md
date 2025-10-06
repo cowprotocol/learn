@@ -18,7 +18,7 @@ This tutorial will show you how to create an order using `PreSign` signing schem
 
 For pre-signed orders, we need to use:
 - `OrderBookApi` to get a quote send an order to the CoW Protocol order book
-- `MetadataApi` to generate order meta data
+- `MetadataApi` to generate order meta data (uses the configured adapter)
 - `Safe` to create and sign the transaction to the Settlement contract
 - `SafeApiKit` to propose the transaction to Safe owners
 
@@ -46,10 +46,23 @@ import {
   SupportedChainId,
   OrderBookApi,
   COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
+  MetadataApi,
+  latest,
+  setGlobalAdapter
 } from '@cowprotocol/cow-sdk'
-import { MetadataApi, latest } from '@cowprotocol/app-data'
+import { EthersV5Adapter } from '@cowprotocol/sdk-ethers-v5-adapter'
+
+// Helper function to setup adapter
+function setupAdapter(provider: Web3Provider) {
+  const signer = provider.getSigner();
+  const adapter = new EthersV5Adapter({ provider, signer });
+  setGlobalAdapter(adapter);
+  return { signer, adapter };
+}
 
 export async function run(provider: Web3Provider): Promise<unknown> {
+  // Setup adapter for MetadataApi
+  const { signer } = setupAdapter(provider);
   // ...
 }
 ```
@@ -65,10 +78,15 @@ import {
   SupportedChainId,
   OrderBookApi,
   COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
+  MetadataApi,
+  latest,
+  setGlobalAdapter
 } from '@cowprotocol/cow-sdk'
-import { MetadataApi, latest } from '@cowprotocol/app-data'
+import { EthersV5Adapter } from '@cowprotocol/sdk-ethers-v5-adapter'
 
 export async function run(provider: Web3Provider): Promise<unknown> {
+  const { signer } = setupAdapter(provider);
+  
   // ...
   const abi = [
     {
@@ -110,6 +128,8 @@ This is relatively simple and we can just define a `const`:
 /// file: run.ts
 // ...
 export async function run(provider: Web3Provider): Promise<unknown> {
+  const { signer } = setupAdapter(provider);
+  
   // ...
  
   const SAFE_TRANSACTION_SERVICE_URL: Record<SupportedChainId, string> = {
@@ -131,13 +151,18 @@ import type { Web3Provider } from '@ethersproject/providers'
 import {
   SupportedChainId,
   OrderBookApi,
+  MetadataApi,
+  latest,
+  setGlobalAdapter
 } from '@cowprotocol/cow-sdk'
-import { MetadataApi, latest } from '@cowprotocol/app-data'
+import { EthersV5Adapter } from '@cowprotocol/sdk-ethers-v5-adapter'
 +++import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'+++
 +++import Safe, { EthersAdapter } from '@safe-global/protocol-kit'+++
 +++import SafeApiKit from '@safe-global/api-kit'+++
 
 export async function run(provider: Web3Provider): Promise<unknown> {
+  const { signer } = setupAdapter(provider);
+  
   // ...
   const getSafeSdkAndKit = async (safeAddress: string) => {
     const ethAdapter = new EthersAdapter({ ethers, signerOrProvider: signer })
@@ -161,6 +186,8 @@ The above function returns an object with the `safeApiKit` and the `safeSdk` ins
 // ...
 
 export function run(provider: Web3Provider): Promise<unknown> {
+  const { signer } = setupAdapter(provider);
+  
   // ...
 
   const proposeSafeTx = async (params: MetaTransactionData) => {
@@ -196,6 +223,8 @@ The `Safe` address is the address of the smart contract wallet that we're going 
 // ...
 
 export async function run(provider: Web3Provider): Promise<unknown> {
+  const { signer } = setupAdapter(provider);
+  
   // ...
   const safeAddress = '0x075E706842751c28aAFCc326c8E7a26777fe3Cc2'
   // ...
@@ -211,6 +240,8 @@ Now that we have the contract address and the ABI, we can create the contract in
 // ...
 
 export async function run(provider: Web3Provider): Promise<unknown> {
+  const { signer } = setupAdapter(provider);
+  
   // ...
   const settlementContract = new Contract(COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[chainId], abi)
   // ...
@@ -226,8 +257,33 @@ Now that we have the `Safe` address and associated helper functions, we can conn
 // ...
 
 export async function run(provider: Web3Provider): Promise<unknown> {
+  const { signer } = setupAdapter(provider);
+  
   // ...
   const { safeApiKit, safeSdk } = await getSafeSdkAndKit(safeAddress)
+  // ...
+}
+```
+
+### App data processing
+
+We'll use the updated `getAppDataInfo()` method to process our app data document, which returns the CID along with the hex and content:
+
+```typescript
+/// file: run.ts
+export async function run(provider: Web3Provider): Promise<unknown> {
+  const { signer } = setupAdapter(provider);
+  const metadataApi = new MetadataApi();
+
+  // Generate app data document
+  const appDataDoc = await metadataApi.generateAppDataDoc({
+    appCode,
+    environment,
+    metadata: { referrer, quote: quoteAppDoc, orderClass },
+  });
+
+  // Use updated API method
+  const { cid, appDataHex, appDataContent } = await metadataApi.getAppDataInfo(appDataDoc);
   // ...
 }
 ```
@@ -246,11 +302,16 @@ import {
 +++  OrderQuoteRequest,+++
 +++  OrderQuoteSideKindSell,+++
 +++  OrderCreation,+++
-  COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS
+  COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
+  MetadataApi,
+  latest,
+  setGlobalAdapter
 } from '@cowprotocol/cow-sdk'
 // ...
 
 export function run(provider: Web3Provider): Promise<unknown> {
+  const { signer } = setupAdapter(provider);
+  
   // ...
   const sellAmount = '1000000000000000000';
   const sellToken = '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d';
@@ -287,6 +348,8 @@ Now that we have the quote, we can submit the order to the order book. As we're 
 // ...
 
 export function run(provider: Web3Provider): Promise<unknown> {
+  const { signer } = setupAdapter(provider);
+  
   // ...
   const order: OrderCreation = {
     ...quote,
@@ -320,6 +383,8 @@ Now that we have the `orderUid`, we can create the transaction to the `GPv2Settl
 // ...
 
 export function run(provider: Web3Provider): Promise<unknown> {
+  const { signer } = setupAdapter(provider);
+  
   // ...
   const presignCallData = settlementContract.interface.encodeFunctionData('setPreSignature', [
     orderUid,

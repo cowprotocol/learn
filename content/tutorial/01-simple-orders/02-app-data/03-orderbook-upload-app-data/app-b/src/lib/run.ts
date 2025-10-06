@@ -1,4 +1,4 @@
-import type { Web3Provider } from '@ethersproject/providers';
+import type { PublicClient, WalletClient } from 'viem';
 import {
 	OrderBookApi,
 	MetadataApi,
@@ -6,20 +6,19 @@ import {
 	SupportedChainId,
 	setGlobalAdapter
 } from '@cowprotocol/cow-sdk';
-import { EthersV5Adapter } from '@cowprotocol/sdk-ethers-v5-adapter';
+import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter';
 
 // Helper function to setup adapter
-function setupAdapter(provider: Web3Provider) {
-	const signer = provider.getSigner();
-	const adapter = new EthersV5Adapter({ provider, signer });
+function setupAdapter(publicClient: PublicClient, walletClient: WalletClient) {
+	const adapter = new ViemAdapter({ provider: publicClient, walletClient });
 	setGlobalAdapter(adapter);
-	return { signer, adapter };
+	return { adapter };
 }
 
-export async function run(provider: Web3Provider): Promise<unknown> {
-	setupAdapter(provider);
+export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
+	setupAdapter(publicClient, walletClient);
 
-	const chainId = +(await provider.send('eth_chainId', []));
+	const chainId = await publicClient.getChainId();
 	if (chainId !== SupportedChainId.GNOSIS_CHAIN) {
 		throw new Error(`Please connect to the Gnosis chain. ChainId: ${chainId}`);
 	}

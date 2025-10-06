@@ -1,4 +1,4 @@
-import type { Web3Provider } from '@ethersproject/providers'
+import type { WalletClient, PublicClient } from 'viem'
 import {
   SupportedChainId,
   OrderBookApi,
@@ -6,22 +6,21 @@ import {
   latest,
   setGlobalAdapter
 } from '@cowprotocol/cow-sdk'
-import { EthersV5Adapter } from '@cowprotocol/sdk-ethers-v5-adapter'
+import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter'
 
-function setupAdapter(provider: Web3Provider) {
-  const signer = provider.getSigner()
-  const adapter = new EthersV5Adapter({ provider, signer })
+function setupAdapter(walletClient: WalletClient, publicClient: PublicClient) {
+  const adapter = new ViemAdapter({ walletClient, publicClient })
   setGlobalAdapter(adapter)
-  return { signer, adapter }
+  return { adapter }
 }
 
-export async function run(provider: Web3Provider): Promise<unknown> {
-  const chainId = +(await provider.send('eth_chainId', []));
+export async function run(walletClient: WalletClient, publicClient: PublicClient): Promise<unknown> {
+  const chainId = await publicClient.getChainId();
   if (chainId !== SupportedChainId.GNOSIS_CHAIN) {
-      await provider.send('wallet_switchEthereumChain', [{ chainId: SupportedChainId.GNOSIS_CHAIN }]);
+      await walletClient.switchChain({ id: SupportedChainId.GNOSIS_CHAIN });
   }
 
-  setupAdapter(provider)
+  setupAdapter(walletClient, publicClient)
   const orderBookApi = new OrderBookApi({ chainId })
   const metadataApi = new MetadataApi()
 
@@ -43,8 +42,7 @@ export async function run(provider: Web3Provider): Promise<unknown> {
 
   const { cid, appDataHex, appDataContent } = await metadataApi.getAppDataInfo(appDataDoc)
 
-  const signer = provider.getSigner();
-  const ownerAddress = await signer.getAddress();
+  const [ownerAddress] = await walletClient.getAddresses();
 
   // TODO: Implement!
   return {}

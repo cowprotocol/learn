@@ -1,21 +1,21 @@
-import { utils } from 'ethers';
-import type { Web3Provider } from '@ethersproject/providers';
+import { parseEther } from 'viem';
+import type { PublicClient, WalletClient } from 'viem';
 
-export async function run(provider: Web3Provider): Promise<unknown> {
-	const signer = provider.getSigner();
+export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
+	const [ownerAddress] = await walletClient.getAddresses();
 
 	const tx = {
-		to: await signer.getAddress(),
-		value: utils.parseEther('0.01')
+		to: ownerAddress,
+		value: parseEther('0.01')
 	};
 
 	// Send the transaction
-	const transactionResponse = await signer.sendTransaction(tx);
-	console.log(`Transaction sent! https://rpc.mevblocker.io/tx/${transactionResponse.hash}`);
+	const hash = await walletClient.sendTransaction(tx);
+	console.log(`Transaction sent! https://rpc.mevblocker.io/tx/${hash}`);
 
 	// Wait for the transaction to be included
-	await transactionResponse.wait();
+	await publicClient.waitForTransactionReceipt({ hash });
 	console.log('Transaction confirmed');
 
-	return `https://etherscan.io/tx/${transactionResponse.hash}`;
+	return `https://etherscan.io/tx/${hash}`;
 }

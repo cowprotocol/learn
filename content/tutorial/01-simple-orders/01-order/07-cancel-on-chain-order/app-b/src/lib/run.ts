@@ -1,9 +1,8 @@
-import type { Web3Provider } from '@ethersproject/providers';
+import type { PublicClient, WalletClient } from 'viem';
 import { SupportedChainId } from '@cowprotocol/cow-sdk';
-import { Contract } from 'ethers';
 
-export async function run(provider: Web3Provider): Promise<unknown> {
-    const chainId = +(await provider.send('eth_chainId', []));
+export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
+    const chainId = await publicClient.getChainId();
     if (chainId !== SupportedChainId.GNOSIS_CHAIN) {
         throw new Error(`Please connect to the Gnosis chain. ChainId: ${chainId}`);
     }
@@ -22,14 +21,20 @@ export async function run(provider: Web3Provider): Promise<unknown> {
             "stateMutability": "nonpayable",
             "type": "function"
         }
-    ]
+    ] as const;
 
-    const signer = provider.getSigner();
-    const settlement = new Contract(settlementAddress, invalidateOrderAbi, signer);
+    const [ownerAddress] = await walletClient.getAddresses();
 
-    const tx = await settlement.invalidateOrder(orderUid);
-    console.log('tx', tx);
-    const receipt = await tx.wait();
+    const hash = await walletClient.writeContract({
+        address: settlementAddress,
+        abi: invalidateOrderAbi,
+        functionName: 'invalidateOrder',
+        args: [orderUid],
+        account: ownerAddress,
+    });
+
+    console.log('tx hash', hash);
+    const receipt = await publicClient.waitForTransactionReceipt({ hash });
 
     return receipt;
 }

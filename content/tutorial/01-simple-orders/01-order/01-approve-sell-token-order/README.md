@@ -8,14 +8,14 @@ For an order to be tradeable on CoW Protocol, the owner needs to approve the [GP
 
 ## Contract (token) interaction
 
-For interacting with contracts, the tutorials use [ethers.js](https://docs.ethers.io/v5/).
+For interacting with contracts, the tutorials use [viem](https://viem.sh/).
 
 To interact with a contract, we need to know:
 
 - the contract address
 - the ABI
 
-Additionally, if we want to **make a transaction**, we must have a _signer_ (e.g. a wallet).
+Additionally, if we want to **make a transaction**, we must have a wallet client.
 
 ### Contract address
 
@@ -25,9 +25,9 @@ At the same time, we assign the address of the [GPv2VaultRelayer](https://docs.c
 
 ```typescript
 /// file: run.ts
-import type { Web3Provider } from '@ethersproject/providers';
+import type { PublicClient, WalletClient } from 'viem';
 
-export async function run(provider: Web3Provider): Promise<unknown> {
+export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
   const relayerAddress = '0xC92E8bdf79f0507f65a392b0ab4667716BFE0110';
   const tokenAddress = '0xe91d153e0b41518a2ce8dd3d7944fa863463a97d';
 
@@ -43,9 +43,9 @@ We can set this function's ABI as a `const`:
 
 ```typescript
 /// file: run.ts
-import type { Web3Provider } from '@ethersproject/providers';
+import type { PublicClient, WalletClient } from 'viem';
 
-export async function run(provider: Web3Provider): Promise<unknown> {
+export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
   // ...
 
   const approveAbi = [
@@ -59,42 +59,24 @@ export async function run(provider: Web3Provider): Promise<unknown> {
       stateMutability: 'nonpayable',
       type: 'function',
     },
-  ];
+  ] as const;
 
   // ...
 }
 ```
 
-### Signer
+### Account address
 
-To make a transaction, we need a signer. In this tutorial, we use an injected Web3Provider, such as [Rabby](https://rabby.io). We can get the signer from the provider:
-
-```typescript
-/// file: run.ts
-import type { Web3Provider } from '@ethersproject/providers';
-
-export async function run(provider: Web3Provider): Promise<unknown> {
-  // ...
-
-  const signer = provider.getSigner();
-
-  // ...
-}
-```
-
-### Connect to the contract
-
-To interact with the contract, we need to connect to it. We can do this by using the `Contract` class from ethers.js:
+To make a transaction, we need an account address from the wallet client. In this tutorial, we use an injected wallet provider, such as [Rabby](https://rabby.io). We can get the account address from the wallet client:
 
 ```typescript
 /// file: run.ts
-import type { Web3Provider } from '@ethersproject/providers';
-+++import { Contract } from '@ethersproject/contracts';+++
+import type { PublicClient, WalletClient } from 'viem';
 
-export async function run(provider: Web3Provider): Promise<unknown> {
+export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
   // ...
 
-  const wxDai = new Contract(tokenAddress, approveAbi, signer);
+  const [ownerAddress] = await walletClient.getAddresses();
 
   // ...
 }
@@ -102,24 +84,28 @@ export async function run(provider: Web3Provider): Promise<unknown> {
 
 ### Execute the `approve`
 
-Now we have everything we need to execute the `approve` function. We will now give the `relayerAddress` unlimited approval to spend the `tokenAddress` token.
+Now we have everything we need to execute the `approve` function. We will now give the `relayerAddress` unlimited approval to spend the `tokenAddress` token. With viem, we use the wallet client's `writeContract` method and pass the maximum uint256 value as a BigInt:
 
 ```typescript
 /// file: run.ts
-import type { Web3Provider } from '@ethersproject/providers';
-+++import { Contract } from '@ethersproject/contracts';+++
-+++import { ethers } from 'ethers';+++
+import type { PublicClient, WalletClient } from 'viem';
 
-export async function run(provider: Web3Provider): Promise<unknown> {
+export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
   // ...
 
-  const wxDai = new Contract(tokenAddress, approveAbi, signer);
+  const approvalAmount = BigInt('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
 
-  const tx = await wxDai.approve(relayerAddress, ethers.constants.MaxUint256);
-  console.log('tx', tx);
-  const receipt = await tx.wait();
+  const hash = await walletClient.writeContract({
+    address: tokenAddress,
+    abi: approveAbi,
+    functionName: 'approve',
+    args: [relayerAddress, approvalAmount],
+    account: ownerAddress,
+  });
 
-  return receipt;
+  console.log('tx hash', hash);
+
+  return publicClient.waitForTransactionReceipt({ hash });
 }
 ```
 
@@ -132,4 +118,4 @@ When running the script, we will be asked to connect a wallet. We can use Rabby 
 1. Accept the connection request in Rabby
 2. Click "Run"
 3. Observe the `tx` object in the browser's console
-4. On successful confirmation of the transaction, the `receipt` object will be returned to the output panel
+4. On successful confirmation of the transaction, the transaction hash will be returned to the output panel

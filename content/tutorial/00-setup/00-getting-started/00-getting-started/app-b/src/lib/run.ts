@@ -1,8 +1,15 @@
-import type { Web3Provider } from '@ethersproject/providers'
+import type { PublicClient, WalletClient } from 'viem'
 
-export async function run(provider: Web3Provider): Promise<unknown> {
-  console.log('Hello world!');
-  return {
-    message: "Hello world!"
-  };
+export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
+	console.log('Hello world!');
+
+	// Get the chain ID and connected account
+	const chainId = await publicClient.getChainId()
+	const [account] = await walletClient.getAddresses()
+
+	return {
+		message: "Hello world!",
+		chainId,
+		account
+	}
 }

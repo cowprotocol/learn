@@ -1,7 +1,7 @@
-import type { Web3Provider } from '@ethersproject/providers';
+import type { PublicClient, WalletClient } from 'viem';
 import { OrderBookApi, SupportedChainId } from '@cowprotocol/cow-sdk';
 
-export async function run(provider: Web3Provider): Promise<unknown> {
+export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
 	const orderBookApi = new OrderBookApi({ chainId: SupportedChainId.GNOSIS_CHAIN });
 
 	// TODO: Retrieve app data using getAppData method

@@ -1,4 +1,4 @@
-import type { Web3Provider } from '@ethersproject/providers';
+import type { PublicClient, WalletClient } from 'viem';
 import {
 	OrderBookApi,
 	MetadataApi,
@@ -6,16 +6,15 @@ import {
 	SupportedChainId,
 	OrderQuoteSideKindSell
 } from '@cowprotocol/cow-sdk';
-import { EthersV5Adapter } from '@cowprotocol/sdk-ethers-v5-adapter';
+import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter';
 
-export async function run(provider: Web3Provider): Promise<unknown> {
-	const chainId = +(await provider.send('eth_chainId', []));
+export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
+	const chainId = await publicClient.getChainId();
 	if (chainId !== SupportedChainId.GNOSIS_CHAIN) {
 		throw new Error(`Please connect to the Gnosis chain. ChainId: ${chainId}`);
 	}
 
-	const signer = provider.getSigner();
-	const adapter = new EthersV5Adapter({ provider, signer });
+	const adapter = new ViemAdapter({ publicClient, walletClient });
 
 	// Initialize individual packages
 	const orderBookApi = new OrderBookApi({ chainId });

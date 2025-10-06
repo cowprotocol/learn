@@ -1,5 +1,5 @@
-import type { Web3Provider } from '@ethersproject/providers'
-import { BigNumber, Contract, ethers } from 'ethers'
+import type { WalletClient, PublicClient } from 'viem'
+import { encodeFunctionData } from 'viem'
 import {
   SupportedChainId,
   OrderBookApi,
@@ -12,22 +12,22 @@ import {
   latest,
   setGlobalAdapter
 } from '@cowprotocol/cow-sdk'
-import { EthersV5Adapter } from '@cowprotocol/sdk-ethers-v5-adapter'
+import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import Safe, { EthersAdapter } from '@safe-global/protocol-kit'
 import SafeApiKit from '@safe-global/api-kit'
+import { ethers } from 'ethers'
 
-function setupAdapter(provider: Web3Provider) {
-  const signer = provider.getSigner()
-  const adapter = new EthersV5Adapter({ provider, signer })
+function setupAdapter(walletClient: WalletClient, publicClient: PublicClient) {
+  const adapter = new ViemAdapter({ walletClient, publicClient })
   setGlobalAdapter(adapter)
-  return { signer, adapter }
+  return { adapter }
 }
 
-export async function run(provider: Web3Provider): Promise<unknown> {
-  const chainId = +(await provider.send('eth_chainId', []));
+export async function run(walletClient: WalletClient, publicClient: PublicClient): Promise<unknown> {
+  const chainId = await publicClient.getChainId();
   if (chainId !== SupportedChainId.GNOSIS_CHAIN) {
-      await provider.send('wallet_switchEthereumChain', [{ chainId: SupportedChainId.GNOSIS_CHAIN }]);
+      await walletClient.switchChain({ id: SupportedChainId.GNOSIS_CHAIN });
   }
   const orderBookApi = new OrderBookApi({ chainId })
   const metadataApi = new MetadataApi()
@@ -50,8 +50,25 @@ export async function run(provider: Web3Provider): Promise<unknown> {
 
   const { cid, appDataHex, appDataContent } = await metadataApi.getAppDataInfo(appDataDoc)
 
-  const signer = provider.getSigner();
-  const ownerAddress = await signer.getAddress();
+  const [ownerAddress] = await walletClient.getAddresses();
+
+  // Create a bridge for Safe SDK which still needs ethers
+  const walletClientToSigner = (walletClient: WalletClient) => {
+    const account = walletClient.account;
+    if (!account) throw new Error('No account in wallet client');
+
+    return {
+      getAddress: async () => account.address,
+      signMessage: async (message: string | Uint8Array) => {
+        return await walletClient.signMessage({
+          account,
+          message: typeof message === 'string' ? message : { raw: message }
+        });
+      }
+    };
+  }
+
+  const signer = walletClientToSigner(walletClient) as any;
 
   const abi = [
     {
@@ -101,7 +118,7 @@ export async function run(provider: Web3Provider): Promise<unknown> {
   }
 
   const safeAddress = '0x075E706842751c28aAFCc326c8E7a26777fe3Cc2'
-  const settlementContract = new Contract(COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[chainId], abi)
+  const settlementAddress = COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[chainId]
 
   const { safeApiKit, safeSdk } = await getSafeSdkAndKit(safeAddress)
 
@@ -125,7 +142,7 @@ export async function run(provider: Web3Provider): Promise<unknown> {
   const order: OrderCreation = {
     ...quote,
     sellAmount,
-    buyAmount: BigNumber.from(quote.buyAmount).mul(9950).div(10000).toString(),
+    buyAmount: (BigInt(quote.buyAmount) * 9950n / 10000n).toString(),
     feeAmount: '0',
     appData: appDataContent,
     appDataHash: appDataHex,
@@ -137,13 +154,14 @@ export async function run(provider: Web3Provider): Promise<unknown> {
 
   const orderUid = await orderBookApi.sendOrder(order)
 
-  const presignCallData = settlementContract.interface.encodeFunctionData('setPreSignature', [
-    orderUid,
-    true,
-  ])
+  const presignCallData = encodeFunctionData({
+    abi: abi,
+    functionName: 'setPreSignature',
+    args: [orderUid, true]
+  })
 
   const presignRawTx: MetaTransactionData = {
-    to: settlementContract.address,
+    to: settlementAddress,
     value: '0',
     data: presignCallData,
   }

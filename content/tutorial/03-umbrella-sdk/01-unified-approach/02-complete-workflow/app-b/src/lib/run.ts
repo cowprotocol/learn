@@ -1,4 +1,4 @@
-import type { Web3Provider } from '@ethersproject/providers';
+import type { PublicClient, WalletClient } from 'viem';
 import {
 	CowSdk,
 	SupportedChainId,
@@ -6,16 +6,15 @@ import {
 	latest,
 	UnsignedOrder
 } from '@cowprotocol/cow-sdk';
-import { EthersV5Adapter } from '@cowprotocol/sdk-ethers-v5-adapter';
+import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter';
 
-export async function run(provider: Web3Provider): Promise<unknown> {
-	const chainId = +(await provider.send('eth_chainId', []));
+export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
+	const chainId = await publicClient.getChainId();
 	if (chainId !== SupportedChainId.GNOSIS_CHAIN) {
 		throw new Error(`Please connect to the Gnosis chain. ChainId: ${chainId}`);
 	}
 
-	const signer = provider.getSigner();
-	const adapter = new EthersV5Adapter({ provider, signer });
+	const adapter = new ViemAdapter({ publicClient, walletClient });
 
 	// Initialize unified SDK
 	const cowSdk = new CowSdk({
@@ -24,7 +23,7 @@ export async function run(provider: Web3Provider): Promise<unknown> {
 		env: 'prod'
 	});
 
-	const ownerAddress = await signer.getAddress();
+	const [ownerAddress] = await walletClient.getAddresses();
 
 	// Trading parameters
 	const sellToken = '0xe91d153e0b41518a2ce8dd3d7944fa863463a97d';
@@ -65,7 +64,7 @@ export async function run(provider: Web3Provider): Promise<unknown> {
 		appData: appDataHex
 	};
 
-	const orderSigningResult = await cowSdk.orderSigning.signOrder(order, chainId, signer);
+	const orderSigningResult = await cowSdk.orderSigning.signOrder(order, chainId, adapter);
 
 	return {
 		appDataHash: appDataHex,

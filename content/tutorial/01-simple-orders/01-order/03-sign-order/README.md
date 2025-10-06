@@ -8,7 +8,7 @@ Here we will build on the previous tutorial and sign the quote we got from the [
 
 As we learned in the previous tutorials, to use the CoW Protocol SDK we need to configure an adapter. Since this is the first tutorial that requires SDK classes that need the adapter, we've prepared a setup function for you that we'll use in all subsequent tutorials.
 
-The adapter handles the connection between the CoW Protocol SDK and your chosen Ethereum library (in our case, Ethers v5). Once configured, all SDK classes will automatically use this adapter for blockchain operations.
+The adapter handles the connection between the CoW Protocol SDK and your chosen Ethereum library (in our case, Viem). Once configured, all SDK classes will automatically use this adapter for blockchain operations.
 
 ## Intents and signatures
 
@@ -24,20 +24,19 @@ For signing, we will use the `UnsignedOrder` type from the `SDK`, along with the
 
 ```typescript
 /// file: run.ts
-import type { Web3Provider } from '@ethersproject/providers';
-+++import { OrderBookApi, SupportedChainId, OrderQuoteRequest, OrderQuoteSideKindSell, OrderSigningUtils, UnsignedOrder, setGlobalAdapter } from '@cowprotocol/cow-sdk';+++
-+++import { EthersV5Adapter } from '@cowprotocol/sdk-ethers-v5-adapter';+++
+import type { PublicClient, WalletClient } from 'viem';
++++import { OrderBookApi, SupportedChainId, OrderQuoteRequest, OrderKind, OrderSigningUtils, UnsignedOrder, setGlobalAdapter } from '@cowprotocol/cow-sdk';+++
++++import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter';+++
 
-export async function run(provider: Web3Provider): Promise<unknown> {
+export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
   // Setup adapter (this pattern will be used in all following tutorials)
-  const signer = provider.getSigner()
-  const adapter = new EthersV5Adapter({ provider, signer })
+  const adapter = new ViemAdapter({ provider: publicClient, walletClient })
   setGlobalAdapter(adapter)
 
   // ...
 
     // Use the original sellAmount, which is equal to quoted sellAmount added to quoted feeAmount
-    // sellAmount === BigNumber.from(quote.sellAmount).add(BigNumber.from(quote.feeAmount)).toString()
+    // sellAmount === (BigInt(quote.sellAmount) + BigInt(quote.feeAmount)).toString()
 
     // And feeAmount must be set to 0
     const feeAmount = '0'
@@ -59,27 +58,26 @@ Now that we have the `UnsignedOrder`, we can sign it using the `OrderSigningUtil
 
 ```typescript
 /// file: run.ts
-import type { Web3Provider } from '@ethersproject/providers';
+import type { PublicClient, WalletClient } from 'viem';
 import {
 	OrderBookApi,
 	SupportedChainId,
 	OrderQuoteRequest,
-	OrderQuoteSideKindSell,
+	OrderKind,
 	OrderSigningUtils,
 	UnsignedOrder,
 	setGlobalAdapter
 } from '@cowprotocol/cow-sdk';
-import { EthersV5Adapter } from '@cowprotocol/sdk-ethers-v5-adapter';
+import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter';
 
-export async function run(provider: Web3Provider): Promise<unknown> {
+export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
 	// Setup adapter
-	const signer = provider.getSigner();
-	const adapter = new EthersV5Adapter({ provider, signer });
+	const adapter = new ViemAdapter({ provider: publicClient, walletClient });
 	setGlobalAdapter(adapter);
 
 	// ...
 
-	return OrderSigningUtils.signOrder(order, chainId, signer);
+	return OrderSigningUtils.signOrder(order, chainId, adapter);
 }
 ```
 

@@ -1,6 +1,6 @@
-import type { Web3Provider } from '@ethersproject/providers';
+import type { PublicClient, WalletClient } from 'viem';
 
-export async function run(provider: Web3Provider): Promise<unknown> {
+export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
 	const networkConfig = {
 		chainId: '0x1', // Mainnet
 		chainName: 'MEV Blocker',
@@ -15,5 +15,8 @@ export async function run(provider: Web3Provider): Promise<unknown> {
 		blockExplorerUrls: ['https://etherscan.io']
 	};
 
-	return await provider.send('wallet_addEthereumChain', [networkConfig]);
+	return await walletClient.request({
+		method: 'wallet_addEthereumChain',
+		params: [networkConfig]
+	});
 }

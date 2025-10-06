@@ -16,13 +16,12 @@ The CowSdk class offers several advantages:
 
 ```typescript
 /// file: run.ts
-import type { Web3Provider } from '@ethersproject/providers';
+import type { PublicClient, WalletClient } from 'viem';
 import { CowSdk, SupportedChainId } from '@cowprotocol/cow-sdk';
-import { EthersV5Adapter } from '@cowprotocol/sdk-ethers-v5-adapter';
+import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter';
 
-export async function run(provider: Web3Provider): Promise<unknown> {
-    const signer = provider.getSigner();
-    const adapter = new EthersV5Adapter({ provider, signer });
+export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
+    const adapter = new ViemAdapter({ provider: publicClient, walletClient });
 
     // Initialize the unified SDK
     const cowSdk = new CowSdk({
@@ -73,7 +72,7 @@ const order = await cowSdk.orderBook.getOrder(orderUid)
 const appData = await cowSdk.metadataApi.generateAppDataDoc({...})
 
 // Sign an order using the unified SDK
-const signature = await cowSdk.orderSigning.signOrder(order, chainId, signer)
+const signature = await cowSdk.orderSigning.signOrder(order, chainId, adapter)
 ```
 
 ## Run the Code

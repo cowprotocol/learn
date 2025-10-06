@@ -1,7 +1,6 @@
-import type { Web3Provider } from '@ethersproject/providers'
-import { Contract, ethers } from "ethers";
+import type { PublicClient, WalletClient } from 'viem'
 
-export async function run(provider: Web3Provider): Promise<unknown> {
+export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
   const relayerAddress = '0xC92E8bdf79f0507f65a392b0ab4667716BFE0110';
   const tokenAddress = '0xe91d153e0b41518a2ce8dd3d7944fa863463a97d';
 
@@ -17,14 +16,21 @@ export async function run(provider: Web3Provider): Promise<unknown> {
       stateMutability: 'nonpayable',
       type: 'function',
     },
-  ];
+  ] as const;
 
-  const signer = provider.getSigner();
-  const wxDai = new Contract(tokenAddress, approveAbi, signer);
+  const [ownerAddress] = await walletClient.getAddresses();
 
-  const tx = await wxDai.approve(relayerAddress, ethers.constants.MaxUint256);
-  console.log('tx', tx);
-  const receipt = await tx.wait();
+	const approvalAmount = BigInt('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
 
-  return receipt;
+  const hash = await walletClient.writeContract({
+    address: tokenAddress,
+    abi: approveAbi,
+    functionName: 'approve',
+    args: [relayerAddress, approvalAmount],
+    account: ownerAddress,
+  });
+
+  console.log('tx hash', hash);
+
+  return { txHash: hash };
 }

@@ -1,15 +1,15 @@
-import { utils } from 'ethers';
-import type { Web3Provider } from '@ethersproject/providers';
+import { parseEther } from 'viem';
+import type { PublicClient, WalletClient } from 'viem';
 
-export async function run(provider: Web3Provider): Promise<unknown> {
-	const signer = provider.getSigner();
+export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
+	const [ownerAddress] = await walletClient.getAddresses();
 
 	const tx = {
-		to: await signer.getAddress(),
-		value: utils.parseEther('0.01')
+		to: ownerAddress,
+		value: parseEther('0.01')
 	};
 
 	// Implement cancellation
 
-	const [transactionResponse] = await Promise.all([signer.sendTransaction(tx)]);
+	const [hash] = await Promise.all([walletClient.sendTransaction(tx)]);
 }

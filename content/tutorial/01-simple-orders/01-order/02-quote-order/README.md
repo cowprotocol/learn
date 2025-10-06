@@ -2,11 +2,11 @@
 title: Quoting
 ---
 
-OK, so you're wanting to trade some tokens on CoW Protocol. Great! But before we do that, let's get a quote first so we know what we're getting into. We get quotes using the [Order book API](https://docs.cow.fi/cow-protocol/tutorials/arbitrate/orderbook).
+OK, so you're wanting to trade some tokens on CoW Protocol. Great! But before we do that, let's get a quote first so we know what we're getting into. We get quotes using the [TradingSdk](https://github.com/cowprotocol/cow-sdk/tree/main/packages/trading/README.md) from `@cowprotocol/cow-sdk`.
 
-## API
+## SDK
 
-The CoW Protocol API is [documented in swagger](https://docs.cow.fi/cow-protocol/reference/apis/orderbook). Using API endpoints can be a bit tricky, so we've exposed all the settings that you need (including things like rate limiters so you don't get blocked) in a simple to use library: `@cowprotocol/cow-sdk`.
+The CoW Protocol SDK provides a high-level TradingSdk that simplifies trading operations. The TradingSdk handles quote fetching, order signing, and posting in a unified interface.
 
 To install it, run: `npm install @cowprotocol/cow-sdk`
 
@@ -20,99 +20,107 @@ CoW Protocol supports multiple environments (e.g. mainnet, gnosis chain, sepolia
 
 ```typescript
 /// file: run.ts
-import type { Web3Provider } from '@ethersproject/providers';
+import type { PublicClient, WalletClient } from 'viem';
 +++import { SupportedChainId } from '@cowprotocol/cow-sdk';+++
 
-export async function run(provider: Web3 Provider): Promise<unknown> {
-    const chainId = +(await provider.send('eth_chainId', []));
+export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
+    const chainId = await publicClient.getChainId();
     if (chainId !== SupportedChainId.GNOSIS_CHAIN) {
         throw new Error(`Please connect to the Gnosis chain. ChainId: ${chainId}`);
     }
 }
 ```
 
-### Instantiate the SDK
+### Setup the adapter
 
-Next, we need to instantiate the `OrderBookApi` from the `@cowprotocol/cow-sdk` library. We can do this by passing the `chainId` to the constructor:
+To use the `TradingSdk` with `viem`, we need to create a `ViemAdapter`:
 
 ```typescript
 /// file: run.ts
-import type { Web3Provider } from '@ethersproject/providers';
-+++import { SupportedChainId, OrderBookApi } from '@cowprotocol/cow-sdk';+++
+import type { PublicClient, WalletClient } from 'viem';
++++import { SupportedChainId, TradingSdk } from '@cowprotocol/cow-sdk';+++
++++import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter';+++
 
-export async function run(provider: Web3Provider): Promise<unknown> {
+export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
     // ...
-    const orderBookApi = new OrderBookApi({ chainId: SupportedChainId.GNOSIS_CHAIN });
+    const adapter = new ViemAdapter({
+        provider: publicClient,
+        walletClient,
+    });
     // ...
 }
 ```
 
-We now have an instantiated `OrderBookApi` that we can use to interact with the Order Book API, and make sure that we don't bust any rate limits.
+### Instantiate the SDK
 
-### Order parameters
+Next, we instantiate the `TradingSdk` with the adapter:
 
-Now that we have an instantiated `OrderBookApi`, we can get a quote. To do this, we need to know:
+```typescript
+/// file: run.ts
+import type { PublicClient, WalletClient } from 'viem';
+import { SupportedChainId, TradingSdk } from '@cowprotocol/cow-sdk';
+import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter';
+
+export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
+    // ...
+    const sdk = new TradingSdk({
+        chainId: SupportedChainId.GNOSIS_CHAIN,
+        appCode: 'CoW Swap',
+    }, {}, adapter);
+    // ...
+}
+```
+
+We now have an instantiated `TradingSdk` that we can use to get quotes and trade on CoW Protocol.
+
+### Trade parameters
+
+Now that we have an instantiated `TradingSdk`, we can get a quote. To do this, we need to specify trade parameters:
 
 - the token we want to sell (the `sellToken`), in this case [`wxDAI`](https://gnosisscan.io/token/0xe91d153e0b41518a2ce8dd3d7944fa863463a97d)
 - the token we want to buy (the `buyToken`), in this case [`COW`](https://gnosisscan.io/token/0x177127622c4A00F3d409B75571e12cB3c8973d3c)
-- the amount of tokens we want to sell (the `sellAmount`), in this case `1 wxDAI` in atomic units (i.e. wei), which is `1000000000000000000`
+- the amount of tokens we want to sell (the `amount`), in this case `1 wxDAI` in atomic units (i.e. wei), which is `1000000000000000000`
+- the decimals for both tokens
+- the order kind (SELL or BUY)
 
 ```typescript
 /// file: run.ts
-import type { Web3Provider } from '@ethersproject/providers';
-import { SupportedChainId, OrderBookApi } from '@cowprotocol/cow-sdk';
+import type { PublicClient, WalletClient } from 'viem';
+import { SupportedChainId, TradingSdk, OrderKind, TradeParameters } from '@cowprotocol/cow-sdk';
+import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter';
 
-export async function run(provider: Web3Provider): Promise<unknown> {
+export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
     // ...
-    const signer = provider.getSigner();
-    const ownerAddress = await signer.getAddress();
-
     const sellToken = '0xe91d153e0b41518a2ce8dd3d7944fa863463a97d'; // wxDAI
     const buyToken = '0x177127622c4A00F3d409B75571e12cB3c8973d3c'; // COW
-    const sellAmount = '1000000000000000000'; // 1 wxDAI
-    // ...
-}
-```
 
-### Order request object
-
-Now that we have all the parameters, we can create an `OrderQuoteRequest` object. Fortunately for us, all the typings are already defined in the `@cowprotocol/cow-sdk` library, so we can just use those:
-
-```typescript
-/// file: run.ts
-import type { Web3Provider } from '@ethersproject/providers';
-+++import { SupportedChainId, OrderBookApi, OrderQuoteRequest, OrderQuoteSideKindSell } from '@cowprotocol/cow-sdk';+++
-
-export async function run(provider: Web3Provider): Promise<unknown> {
-    // ...
-    const quoteRequest: OrderQuoteRequest = {
+    const parameters: TradeParameters = {
+        kind: OrderKind.SELL,
         sellToken,
+        sellTokenDecimals: 18,
         buyToken,
-        from: ownerAddress,
-        receiver: ownerAddress,
-        sellAmountBeforeFee: sellAmount,
-        +++kind: OrderQuoteSideKindSell.SELL,+++
+        buyTokenDecimals: 18,
+        amount: '1000000000000000000', // 1 wxDAI
     };
     // ...
 }
 ```
 
-We can see that there are some special types, that are designed to reduce the potential for human error. These types are automatically generated from the swagger documentation, and compliance with them will ensure that your code is compatible with the API. Examples above include `OrderQuoteRequest` and `OrderQuoteSideKindSell`.
-
 ### Get the quote
 
-Now that we have the `OrderQuoteRequest`, we can get the quote:
+Now that we have the trade parameters, we can get the quote using the TradingSdk:
 
 ```typescript
 /// file: run.ts
-import type { Web3Provider } from '@ethersproject/providers';
-import { SupportedChainId, OrderBookApi, OrderQuoteRequest, OrderQuoteSideKindSell } from '@cowprotocol/cow-sdk';
+import type { PublicClient, WalletClient } from 'viem';
+import { SupportedChainId, TradingSdk, OrderKind, TradeParameters } from '@cowprotocol/cow-sdk';
+import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter';
 
-export async function run(provider: Web3Provider): Promise<unknown> {
+export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
     // ...
-    const { quote } = await orderBookApi.getQuote(quoteRequest);
+    const { quoteResults } = await sdk.getQuote(parameters);
 
-    return quote;
+    return quoteResults;
 }
 ```
 
@@ -124,37 +132,14 @@ When running the script, we may be asked to connect a wallet. We can use Rabby f
 
 1. Accept the connection request in Rabby
 2. Press the "Run" button again
-3. Observe the `OrderQuoteResponse` object returned to the output panel
+3. Observe the `QuoteResults` object returned to the output panel
 
-An example quote should look like:
+The `QuoteResults` object contains:
 
-```json
-/// file: output.json
-{
-    "sellToken": "0xe91d153e0b41518a2ce8dd3d7944fa863463a97d",
-    "buyToken": "0x177127622c4a00f3d409b75571e12cb3c8973d3c",
-    "receiver": "0x29104bb91ADA737a89393c78335e48fF4708727E",
-    "sellAmount": "998118187948506302",
-    "buyAmount": "4000045686115459544",
-    "validTo": 1704267037,
-    "appData": "0x0000000000000000000000000000000000000000000000000000000000000000",
-    "feeAmount": "1881812051493698",
-    "kind": "sell",
-    "partiallyFillable": false,
-    "sellTokenBalance": "erc20",
-    "buyTokenBalance": "erc20",
-    "signingScheme": "eip712"
-}
-```
+- `quoteResponse`: The raw quote response from the API containing order parameters
+- `tradeParameters`: The trade parameters used for the quote
+- `amountsAndCosts`: Calculated amounts including slippage and fees
+- `appDataInfo`: Application-specific metadata
+- `orderToSign`: The order data ready to be signed
 
-In the above case, we can see that:
-
-- the `sellToken` is `0xe91d153e0b41518a2ce8dd3d7944fa863463a97d` (which is `wxDAI`)
-- the `buyToken` is `0x177127622c4a00f3d409b75571e12cb3c8973d3c` (which is `COW`)
-- the `sellAmount` is `998118187948506302` atomic units of `wxDAI` (which is `0.998118187948506302` `wxDAI`)
-- the `buyAmount` is `4000045686115459544` atomic units of `COW` (which is `4.000045686115459544` `COW`)
-- the `validTo` is `1704267037` (which is Jan 03 2024 07:30:37 GMT+0000)
-- the `feeAmount` is `1881812051493698` atomic units of `wxDAI` (which is `0.001881812051493698` `wxDAI`)
-- the `kind` is `sell`
-
-The above `OrderQuoteResponse` object actually maps to the [`GPv2Order.Data`](https://docs.cow.fi/cow-protocol/reference/contracts/core/settlement#gpv2orderdata-struct) struct for the smart contract, so this is what we will sign in the [next tutorial](/tutorial/sign-order) for our swap.
+The quote results provide all the information needed to proceed with signing and posting the order in subsequent tutorials.

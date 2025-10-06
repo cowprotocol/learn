@@ -11,6 +11,8 @@ Tutorials are designed to be followed in order, as each tutorial builds on the p
 
 > If you are using Brave, you will need to disable shields for the webcontainers to work.
 
+All examples in this tutorial are targeted to work on Gnosis chain.
+
 ## Code snippets
 
 All code snippets are in TypeScript, and are executed in a sandboxed environment. You can edit the code and run it again.
@@ -19,18 +21,18 @@ Let's look at the current code snippet:
 
 ```typescript
 /// file: run.ts
-import type { Web3Provider } from '@ethersproject/providers'
+import type { PublicClient, WalletClient } from 'viem'
 
-export async function run(provider: Web3Provider): Promise<unknown> {
+export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
   // TODO: Implement
 }
 ```
 
-### Web3 Provider
+### Viem Clients
 
-The tutorials allows for the use of a browser's Web3 provider, such as Rabby or Metamask. The `provider` argument is a [Web3Provider](https://docs.ethers.io/v5/api/providers/types/#providers-Web3Provider) from the [ethers.js](https://docs.ethers.io/v5/) library.
+The tutorials allow for the use of a browser's Web3 provider, such as Rabby or Metamask. The tutorial system provides `publicClient` and `walletClient` from the [viem](https://viem.sh) library.
 
-This is automatically injected into the code snippet, and you can use it to interact with the blockchain via your browser's wallet.
+These are automatically injected into the code snippet, and you can use them to interact with the blockchain via your browser's wallet.
 
 ### `run` function
 
@@ -42,12 +44,19 @@ Let's finish the code snippet by adding some debugging and returning a value:
 
 ```typescript
 /// file: run.ts
-import type { Web3Provider } from '@ethersproject/providers'
+import type { PublicClient, WalletClient } from 'viem'
 
-export async function run(provider: Web3Provider): Promise<unknown> {
+export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
   console.log('Hello world!');
+
+  // Get the chain ID and connected account
+  const chainId = await publicClient.getChainId()
+  const [account] = await walletClient.getAddresses()
+
   return {
-    message: "Hello world!"
+    message: "Hello world!",
+    chainId,
+    account
   };
 }
 ```
@@ -57,7 +66,9 @@ Once you click the "Run" button, you should see the following output:
 ```json
 /// file: output.json
 {
-  "message": "Hello world!"
+  "message": "Hello world!",
+  "chainId": "<your_wallet_chain_id>",
+  "account": "<your_wallet_account>"
 }
 ```
 

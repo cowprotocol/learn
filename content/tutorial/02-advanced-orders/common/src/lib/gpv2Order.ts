@@ -1,7 +1,7 @@
 import { Order, hashOrder, domain, OrderKind, OrderBalance } from "@cowprotocol/contracts";
 import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS } from "@cowprotocol/cow-sdk";
 import { SupportedChainId } from "@cowprotocol/cow-sdk";
-import { utils } from "ethers";
+import { keccak256, toBytes } from "viem";
 
 export const onchainOrderToOrder = (onchainOrder: any): Order => {
     return {
@@ -27,13 +27,13 @@ export const onchainOrderToHash = (onchainOrder: any, chain: SupportedChainId) =
 const getBalance = (balance: string, isSell: boolean) => {
     switch (balance) {
         // buy and sell
-        case utils.keccak256(utils.toUtf8Bytes('erc20')):
+        case keccak256(toBytes('erc20')):
             return OrderBalance.ERC20;
         // buy and sell
-        case utils.keccak256(utils.toUtf8Bytes('internal')):
+        case keccak256(toBytes('internal')):
             return OrderBalance.INTERNAL;
         // sell only
-        case utils.keccak256(utils.toUtf8Bytes('external')):
+        case keccak256(toBytes('external')):
             if (!isSell) {
                 throw new Error('Invalid balance');
             }
@@ -45,9 +45,9 @@ const getBalance = (balance: string, isSell: boolean) => {
 
 const getKind = (kind: string) => {
     switch (kind) {
-        case utils.keccak256(utils.toUtf8Bytes('sell')):
+        case keccak256(toBytes('sell')):
             return OrderKind.SELL;
-        case utils.keccak256(utils.toUtf8Bytes('buy')):
+        case keccak256(toBytes('buy')):
             return OrderKind.BUY;
         default:
             throw new Error(`Unknown kind: ${kind}`);

@@ -1,7 +1,10 @@
-import type { Web3Provider } from '@ethersproject/providers'
+import type { PublicClient, WalletClient } from 'viem';
 
-export async function run(provider: Web3Provider): Promise<unknown> {
-  console.log(provider)
+export async function run(
+	publicClient: PublicClient,
+	walletClient: WalletClient
+): Promise<unknown> {
+	console.log({publicClient, walletClient});
 
-  return Promise.resolve('')
+	return Promise.resolve('');
 }

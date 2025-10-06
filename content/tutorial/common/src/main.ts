@@ -5,7 +5,9 @@ import { Buffer } from 'buffer'
 window.Buffer = Buffer // Yep, this is a hack
 
 import { run } from './lib/run.ts'
-import { web3Provider } from './web3-provider.ts'
+import { publicClient, walletClient } from './web3-provider.ts'
+import { gnosis } from 'viem/chains';
+import { jsonWithBigintReplacer } from '@cowprotocol/cow-sdk';
 
 function ping() {
   window.parent.postMessage({type: 'ping'}, '*')
@@ -25,14 +27,14 @@ setInterval(ping, 200);
   const appContainer = document.querySelector<HTMLDivElement>('#app')!
 
   // There is no injected wallet in the browser
-  if (!web3Provider) {
+  if (!publicClient || !walletClient) {
     appContainer.innerHTML = `
       <p>Please, install some injected browser wallet first. For example: Rabby, Metamask</p>
     `
     return
   }
 
-  const accounts = await web3Provider.listAccounts()
+  const accounts = await walletClient.getAddresses()
 
   // Wallet is already connected
   if (accounts.length) {
@@ -66,9 +68,12 @@ function initExercise(appContainer: HTMLDivElement) {
   runExampleBtn.addEventListener('click', async () => {
     runExampleBtn.innerHTML = 'Running...'
 
-    run(web3Provider!).then(result => {
-      outputContainer.innerHTML = JSON.stringify(result, null, 4)
+		await walletClient!.switchChain({ id: gnosis.id })
+
+    run(publicClient!, walletClient!).then(result => {
+      outputContainer.innerHTML = JSON.stringify(result, jsonWithBigintReplacer, 4)
     }).catch(error => {
+			console.error(error)
       outputContainer.innerHTML = error.message
     }).finally(() => {
       runExampleBtn.innerHTML = 'Run example'
@@ -79,9 +84,9 @@ function initExercise(appContainer: HTMLDivElement) {
 function connectWallet(appContainer: HTMLDivElement) {
   const connectWalletBtn = document.querySelector<HTMLButtonElement>('#connectWallet')!
 
-  connectWalletBtn.addEventListener('click', () => {
-    window.ethereum!.enable().then(() => {
-      initExercise(appContainer)
-    })
+  connectWalletBtn.addEventListener('click', async () => {
+		await walletClient!.switchChain({ id: gnosis.id })
+		await walletClient!.request({ method: 'eth_requestAccounts' })
+		initExercise(appContainer)
   })
 }

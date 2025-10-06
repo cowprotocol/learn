@@ -1,24 +1,24 @@
-import { utils } from 'ethers';
-import type { Web3Provider } from '@ethersproject/providers';
+import { parseEther } from 'viem';
+import type { PublicClient, WalletClient } from 'viem';
 
-export async function run(provider: Web3Provider): Promise<unknown> {
-	const signer = provider.getSigner();
+export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
+	const [ownerAddress] = await walletClient.getAddresses();
 
-	const nonce = await signer.getTransactionCount();
+	const nonce = await publicClient.getTransactionCount({ address: ownerAddress });
 	const tx = {
-		to: await signer.getAddress(),
-		value: utils.parseEther('0.01'),
+		to: ownerAddress,
+		value: parseEther('0.01'),
 		nonce
 	};
 
 	const cancellation = {
-		to: await signer.getAddress(),
+		to: ownerAddress,
 		nonce
 	};
 
-	const [transactionResponse, _] = await Promise.all([
-		signer.sendTransaction(tx),
-		signer.sendTransaction(cancellation)
+	const [hash, _] = await Promise.all([
+		walletClient.sendTransaction(tx),
+		walletClient.sendTransaction(cancellation)
 	]);
-	return `Cancellation sent! Check https://rpc.mevblocker.io/tx/${transactionResponse.hash}`;
+	return `Cancellation sent! Check https://rpc.mevblocker.io/tx/${hash}`;
 }

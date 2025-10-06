@@ -1,8 +1,6 @@
-import { utils } from 'ethers';
-import type { Web3Provider } from '@ethersproject/providers';
+import { parseEther } from 'viem';
+import type { PublicClient, WalletClient } from 'viem';
 
-export async function run(provider: Web3Provider): Promise<unknown> {
-	const signer = provider.getSigner();
-
+export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
 	// IMPLEMENT
 }

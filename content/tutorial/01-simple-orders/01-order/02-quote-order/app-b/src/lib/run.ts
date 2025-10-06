@@ -1,31 +1,36 @@
-import type { Web3Provider } from '@ethersproject/providers'
-import { OrderBookApi, SupportedChainId, OrderQuoteRequest, OrderQuoteSideKindSell } from '@cowprotocol/cow-sdk'
+import type { PublicClient, WalletClient } from 'viem'
+import { SupportedChainId, OrderKind, TradingSdk, TradeParameters } from '@cowprotocol/cow-sdk'
+import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter'
 
-export async function run(provider: Web3Provider): Promise<unknown> {
-    const chainId = +(await provider.send('eth_chainId', []));
+export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
+    const chainId = await publicClient.getChainId();
     if (chainId !== SupportedChainId.GNOSIS_CHAIN) {
         throw new Error(`Please connect to the Gnosis chain. ChainId: ${chainId}`);
     }
 
-    const orderBookApi = new OrderBookApi({ chainId: SupportedChainId.GNOSIS_CHAIN });
+    const adapter = new ViemAdapter({
+        provider: publicClient,
+        walletClient,
+    });
 
-    const signer = provider.getSigner();
-    const ownerAddress = await signer.getAddress();
+    const sdk = new TradingSdk({
+        chainId: SupportedChainId.GNOSIS_CHAIN,
+        appCode: 'CoW Swap',
+    }, {}, adapter);
 
     const sellToken = '0xe91d153e0b41518a2ce8dd3d7944fa863463a97d'; // wxDAI
     const buyToken = '0x177127622c4A00F3d409B75571e12cB3c8973d3c'; // COW
-    const sellAmount = '1000000000000000000'; // 1 wxDAI
 
-    const quoteRequest: OrderQuoteRequest = {
+    const parameters: TradeParameters = {
+        kind: OrderKind.SELL,
         sellToken,
+        sellTokenDecimals: 18,
         buyToken,
-        from: ownerAddress,
-        receiver: ownerAddress,
-        sellAmountBeforeFee: sellAmount,
-        kind: OrderQuoteSideKindSell.SELL,
+        buyTokenDecimals: 18,
+        amount: '1000000000000000000', // 1 wxDAI
     };
 
-    const { quote } = await orderBookApi.getQuote(quoteRequest);
+    const { quoteResults } = await sdk.getQuote(parameters);
 
-    return quote
+    return quoteResults;
 }

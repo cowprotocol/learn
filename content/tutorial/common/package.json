@@ -9,8 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "7.0.4-pr-570-ff8caab6.0",
-    "@cowprotocol/sdk-viem-adapter": "0.1.1-pr-570-ff8caab6.0",
+    "@cowprotocol/cow-sdk": "7.0.6",
+    "@cowprotocol/sdk-viem-adapter": "0.1.1",
     "@safe-global/api-kit": "^1.3.0",
     "@safe-global/protocol-kit": "^1.2.0",
     "viem": "^2.28.4"

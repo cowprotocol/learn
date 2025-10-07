@@ -1,5 +1,5 @@
 {
-	"title": "Approve sell token",
+	"title": "Approve CoW Protocol",
 	"scope": {
 		"prefix": "/src/lib/",
 		"name": "src"

@@ -135,6 +135,6 @@ The `QuoteResults` object contains:
 - `tradeParameters`: The trade parameters used for the quote
 - `amountsAndCosts`: Calculated amounts including slippage and fees
 - `appDataInfo`: Application-specific metadata
-- `orderToSign`: The order data ready to be signed
+- `orderToSign`: The order data ready to be signed. Important! You don't have to sign exactly that object, `sdk.getQuote()` also returns `postSwapOrderFromQuote` function which will sing and send the order
 
 The quote results provide all the information needed to proceed with signing and posting the order in subsequent tutorials.

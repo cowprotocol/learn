@@ -9,4 +9,7 @@ export async function run(publicClient: PublicClient, walletClient: WalletClient
 
     const orderBookApi = new OrderBookApi({ chainId: SupportedChainId.GNOSIS_CHAIN });
 
+		// TODO: call orderBookApi with some orderUid to get an order data
+
+		return {}
 }

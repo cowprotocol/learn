@@ -30,9 +30,13 @@ export async function run(publicClient: PublicClient, walletClient: WalletClient
 
 ### Viem Clients
 
-The tutorials allow for the use of a browser's Web3 provider, such as Rabby or Metamask. The tutorial system provides `publicClient` and `walletClient` from the [viem](https://viem.sh) library.
+The tutorials allow for the use of a browser's Web3 provider, such as Rabby or Metamask. The tutorial system provides `publicClient` and `walletClient` from the [viem](https://viem.sh/docs/clients/wallet) library.
 
 These are automatically injected into the code snippet, and you can use them to interact with the blockchain via your browser's wallet.
+
+> Note: This tutorial uses [account hoisting](https://viem.sh/docs/clients/wallet#optional-hoist-the-account), to make the code compact.
+
+You can also use libraries like [`Wagmi`](https://wagmi.sh/) to connect a wallet an integrate it with CoW SDK, see the [Wagmi example](https://github.com/cowprotocol/cow-sdk/tree/main/examples/react/wagmi).
 
 ### `run` function
 

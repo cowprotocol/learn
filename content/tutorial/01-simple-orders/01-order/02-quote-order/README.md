@@ -4,12 +4,6 @@ title: Quoting
 
 OK, so you're wanting to trade some tokens on CoW Protocol. Great! But before we do that, let's get a quote first so we know what we're getting into. We get quotes using the [TradingSdk](https://github.com/cowprotocol/cow-sdk/tree/main/packages/trading/README.md) from `@cowprotocol/cow-sdk`.
 
-## SDK
-
-The CoW Protocol SDK provides a high-level TradingSdk that simplifies trading operations. The TradingSdk handles quote fetching, order signing, and posting in a unified interface.
-
-To install it, run: `npm install @cowprotocol/cow-sdk`
-
 ## Quote
 
 As an example, let's get a quote for trading 1 `wxDAI` for `COW` on [Gnosis chain](https://gnosis.io/). This is a simple swap (market order).
@@ -132,7 +126,8 @@ When running the script, we may be asked to connect a wallet. We can use Rabby f
 
 1. Accept the connection request in Rabby
 2. Press the "Run" button again
-3. Observe the `QuoteResults` object returned to the output panel
+3. The output panel will display only `QuoteResults.amountsAndCosts`
+4. Check browser console to see the whole `QuoteResults`
 
 The `QuoteResults` object contains:
 

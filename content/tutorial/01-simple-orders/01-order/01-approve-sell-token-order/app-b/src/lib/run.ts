@@ -23,6 +23,7 @@ export async function run(publicClient: PublicClient, walletClient: WalletClient
 	const approvalAmount = BigInt('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
 
   const hash = await walletClient.writeContract({
+		chain: walletClient.chain,
     address: tokenAddress,
     abi: approveAbi,
     functionName: 'approve',

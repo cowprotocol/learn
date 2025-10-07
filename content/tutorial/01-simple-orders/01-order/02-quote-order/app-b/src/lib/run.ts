@@ -32,5 +32,7 @@ export async function run(publicClient: PublicClient, walletClient: WalletClient
 
     const { quoteResults } = await sdk.getQuote(parameters);
 
-    return quoteResults;
+		console.log('QuoteResults', quoteResults);
+
+    return quoteResults.amountsAndCosts;
 }

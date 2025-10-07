@@ -4,133 +4,69 @@ title: Cancelling on-chain
 
 The preferred way to cancel an order is off-chain, notably because it is free. However, this places trust in the API to cancel the order. If you want to enforce the cancellation of an order, you can do so on-chain. This will cost gas, but will ensure that the order is cancelled.
 
-To cancel, we will send an `invalidateOrder` transaction to the [`GPv2Settlement`](https://docs.cow.fi/cow-protocol/reference/contracts/core/settlement) contract.
+The on-chain cancellation sends an `invalidateOrder` transaction to the [`GPv2Settlement`](https://docs.cow.fi/cow-protocol/reference/contracts/core/settlement) or [`EthFlow`](https://docs.cow.fi/cow-protocol/reference/contracts/periphery/eth-flow) contract.
 
-> A list of the core deployed contracts can be found [here](https://docs.cow.fi/cow-protocol/reference/contracts/core).
+## Cancelling the order on-chain
 
-## Contract (`GPv2Settlement`) interaction
-
-For interacting with contracts, the tutorials use [ethers.js](https://docs.ethers.io/v5/).
-
-To interact with a contract, we need to know:
-
-- the contract address
-- the ABI
-
-Additionally, if we want to **make a transaction**, we must have a _signer_ (e.g. a wallet).
-
-### Contract address and `orderUid`
-
-The contract to be interacted with is the [`GPv2Settlement`](https://docs.cow.fi/cow-protocol/reference/contracts/core/settlement) contract. We assign it's address `0x9008D19f58AAbD9eD0D60971565AA8510560ab41` to a `const`.
-
-At the same time, we assign the `orderUid` of the order we want to cancel to a `const`.
+The TradingSdk provides the `onChainCancelOrder` method that handles the contract interaction, encoding the transaction, and sending it. We simply need to provide the `orderUid`:
 
 ```typescript
 /// file: run.ts
-import type { Web3Provider } from '@ethersproject/providers';
-import { SupportedChainId } from '@cowprotocol/cow-sdk';
+import type { PublicClient, WalletClient } from 'viem';
+import { SupportedChainId, TradingSdk } from '@cowprotocol/cow-sdk';
+import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter';
 
-export async function run(provider: Web3Provider): Promise<unknown> {
-  // ...
-  const settlementAddress = '0x9008D19f58AAbD9eD0D60971565AA8510560ab41';
-  const orderUid = '0x8464affce2df48b60f6976e51414dbc079e9c30ef64f4c1f78c7abe2c7f96a0c29104bb91ada737a89393c78335e48ff4708727e659523a1';
-  // ...
+export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
+	// ...
+
+	const orderUid = '0x8464affce2df48b60f6976e51414dbc079e9c30ef64f4c1f78c7abe2c7f96a0c29104bb91ada737a89393c78335e48ff4708727e659523a1';
+
+	try {
+		const txHash = await sdk.onChainCancelOrder({ orderUid });
+
+		return {
+			txHash,
+			explorerLink: `https://gnosisscan.io/tx/${txHash}`,
+			message: 'Order cancelled on-chain successfully'
+		};
+	} catch (e) {
+		return e;
+	}
 }
 ```
 
-### `invalidateOrder` ABI
+The `onChainCancelOrder` method:
+- Fetches the order details from the API
+- Determines if it's an EthFlow order or a regular order
+- Sends the appropriate cancellation transaction to the Settlement or EthFlow contract
+- Returns the transaction hash
 
-The contract's `invalidateOrder` function is used to cancel an order. We can retrieve the ABI for this function from the contract's verified code on [Gnosisscan](https://gnosisscan.io/address/0x9008D19f58AAbD9eD0D60971565AA8510560ab41#code). We can set this function's ABI as a `const`:
-
-```typescript
-/// file: run.ts
-import type { Web3Provider } from '@ethersproject/providers';
-import { SupportedChainId } from '@cowprotocol/cow-sdk';
-
-export async function run(provider: Web3Provider): Promise<unknown> {
-    // ...
-
-    const invalidateOrderAbi = [
-        {
-            "inputs": [
-                { "internalType": "bytes", "name": "orderUid", "type": "bytes" }
-            ],
-            "name": "invalidateOrder",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        }
-    ];
-
-    // ...
-}
-```
-
-### Signer
-
-To make a transaction, we need a signer. In this tutorial, we use an injected Web3Provider, such as [Rabby](https://rabby.io). We can get the signer from the provider:
-
-```typescript
-/// file: run.ts
-import type { Web3Provider } from '@ethersproject/providers';
-import { SupportedChainId } from '@cowprotocol/cow-sdk';
-
-export async function run(provider: Web3Provider): Promise<unknown> {
-  // ...
-
-  const signer = provider.getSigner();
-
-  // ...
-}
-```
-
-### Connect to the contract
-
-To interact with the contract, we need to connect to it. We can do this by using the `Contract` class from ethers.js:
-
-```typescript
-/// file: run.ts
-import type { Web3Provider } from '@ethersproject/providers';
-import { SupportedChainId } from '@cowprotocol/cow-sdk';
-+++import { Contract } from '@ethersproject/contracts';+++
-
-export async function run(provider: Web3Provider): Promise<unknown> {
-  // ...
-
-  const settlement = new Contract(settlementAddress, invalidateOrderAbi, signer);
-
-  // ...
-}
-```
-
-### Execute the `invalidateOrder`
-
-Now we have everything we need to execute the `invalidateOrder` function. In order to do this, we pass the `orderUid` to the function:
-
-```typescript
-/// file: run.ts
-import type { Web3Provider } from '@ethersproject/providers';
-import { SupportedChainId } from '@cowprotocol/cow-sdk';
-import { Contract } from '@ethersproject/contracts';
-
-export async function run(provider: Web3Provider): Promise<unknown> {
-    // ...
-
-    const tx = await settlement.invalidateOrder(orderUid);
-    console.log('tx', tx);
-    const receipt = await tx.wait();
-
-    return receipt;
-}
-```
+Just as we did in previous tutorials, we are using a `try/catch` block to handle errors.
 
 ## Run the code
 
 To run the code, we can press the "Run" button in the bottom right panel (the web container).
 
+> Important! Enter an open order `orderUid` that belongs to the currently connected wallet, otherwise the transaction will revert!
+
 When running the script, we may be asked to connect a wallet. We can use Rabby for this.
 
 1. Accept the connection request in Rabby
 2. Press the "Run" button again
-3. Observe the `tx` object in the browser's console
-4. On successful confirmation of the transaction, the `receipt` object will be returned to the output panel
+3. Confirm the transaction in your wallet (this will cost gas)
+4. Observe the transaction hash and explorer link returned to the output panel
+
+A successful on-chain cancellation should look like:
+
+```json
+/// file: output.json
+{
+	"txHash": "0x...",
+	"explorerLink": "https://gnosisscan.io/tx/0x...",
+	"message": "Order cancelled on-chain successfully"
+}
+```
+
+> The `onChainCancelOrder` method returns the transaction hash. You can click the `explorerLink` to view the transaction on GnosisScan.
+
+**Note:** On-chain cancellation requires paying gas fees, unlike off-chain cancellation which is free.

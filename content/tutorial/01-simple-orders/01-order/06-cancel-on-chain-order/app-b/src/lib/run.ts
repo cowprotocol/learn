@@ -1,40 +1,35 @@
 import type { PublicClient, WalletClient } from 'viem';
-import { SupportedChainId } from '@cowprotocol/cow-sdk';
+import { SupportedChainId, TradingSdk } from '@cowprotocol/cow-sdk';
+import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter';
 
 export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
-    const chainId = await publicClient.getChainId();
-    if (chainId !== SupportedChainId.GNOSIS_CHAIN) {
-        throw new Error(`Please connect to the Gnosis chain. ChainId: ${chainId}`);
-    }
+	const chainId = await publicClient.getChainId();
+	if (chainId !== SupportedChainId.GNOSIS_CHAIN) {
+		throw new Error(`Please connect to the Gnosis chain. ChainId: ${chainId}`);
+	}
 
-    const settlementAddress = '0x9008D19f58AAbD9eD0D60971565AA8510560ab41';
-    const orderUid = '0x8464affce2df48b60f6976e51414dbc079e9c30ef64f4c1f78c7abe2c7f96a0c29104bb91ada737a89393c78335e48ff4708727e659523a1';
+	const adapter = new ViemAdapter({
+		provider: publicClient,
+		walletClient,
+	});
 
-    // Compacted ABI for the `invalidateOrder` function
-    const invalidateOrderAbi = [
-        {
-            "inputs": [
-                { "internalType": "bytes", "name": "orderUid", "type": "bytes" }
-            ],
-            "name": "invalidateOrder",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        }
-    ] as const;
+	const sdk = new TradingSdk({
+		chainId: SupportedChainId.GNOSIS_CHAIN,
+		appCode: 'CoW Swap',
+	}, {}, adapter);
 
-    const [ownerAddress] = await walletClient.getAddresses();
+	// Put an open order uid, otherwise the cancellation will fail
+	const orderUid = '0x8464affce2df48b60f6976e51414dbc079e9c30ef64f4c1f78c7abe2c7f96a0c29104bb91ada737a89393c78335e48ff4708727e659523a1';
 
-    const hash = await walletClient.writeContract({
-        address: settlementAddress,
-        abi: invalidateOrderAbi,
-        functionName: 'invalidateOrder',
-        args: [orderUid],
-        account: ownerAddress,
-    });
+	try {
+		const txHash = await sdk.onChainCancelOrder({ orderUid });
 
-    console.log('tx hash', hash);
-    const receipt = await publicClient.waitForTransactionReceipt({ hash });
-
-    return receipt;
+		return {
+			txHash,
+			explorerLink: `https://gnosisscan.io/tx/${txHash}`,
+			message: 'Order cancelled on-chain successfully'
+		};
+	} catch (e) {
+		return e;
+	}
 }

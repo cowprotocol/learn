@@ -70,4 +70,4 @@ An example result should look like:
 A couple of errors may easily result when running this code:
 
 - **`InsufficientBalance`**: The wallet you have signed with does not have enough balance for the `sellToken`. A reminder in this example, the `sellToken` is `wxDai` on Gnosis chain.
-- **`InsufficientAllowance`**: In this case, the wallet has enough balance, however you have missed out a step in the [approve tutorial](/tutorial/approve-sell-token-order) and have not approved the `relayerAddress` to spend the `sellToken` on your behalf.
+- **`InsufficientAllowance`**: In this case, the wallet has enough balance, however you have missed out a step in the [approve tutorial](/tutorial/approve-cow-protocol) and have not approved the `relayerAddress` to spend the `sellToken` on your behalf.

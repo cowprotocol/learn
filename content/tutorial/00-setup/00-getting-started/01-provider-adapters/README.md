@@ -187,10 +187,14 @@ An example output should look like:
 ```json
 /// file: output.json
 {
-    "adapterType": "EthersV5Adapter",
-    "chainId": 100,
-    "address": "0x...",
-    "message": "Adapter configured successfully!"
+  "adapterInfo": {
+    "type": "ViemAdapter",
+    "adapterChainId": 100,
+    "hasSigner": true
+  },
+  "chainId": 100,
+  "address": "0x...",
+  "globalAdapterConfigured": true
 }
 ```
 

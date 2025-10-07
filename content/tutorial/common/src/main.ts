@@ -69,6 +69,14 @@ function initExercise(appContainer: HTMLDivElement) {
     runExampleBtn.innerHTML = 'Running...'
 
 		await walletClient!.switchChain({ id: gnosis.id })
+		const accounts = await walletClient!.request({ method: 'eth_requestAccounts' })
+
+		walletClient!.account = {
+			address: accounts[0],
+			type: 'json-rpc'
+		}
+
+		console.log('Assign account to walletClient', walletClient, accounts[0])
 
     run(publicClient!, walletClient!).then(result => {
       outputContainer.innerHTML = JSON.stringify(result, jsonWithBigintReplacer, 4)

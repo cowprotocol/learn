@@ -1,11 +1,13 @@
-import type { Web3Provider } from '@ethersproject/providers'
 import { setGlobalAdapter , getGlobalAdapter} from '@cowprotocol/cow-sdk'
-import { EthersV5Adapter } from '@cowprotocol/sdk-ethers-v5-adapter'
+import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter'
+import type { PublicClient, WalletClient } from 'viem';
 
-export async function run(provider: Web3Provider): Promise<unknown> {
-  // Create the Ethers v5 adapter with provider and signer
-  const signer = provider.getSigner()
-  const adapter = new EthersV5Adapter({ provider, signer })
+export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
+  // Create the ViemAdapter adapter with provider and signer
+	const adapter = new ViemAdapter({
+		provider: publicClient,
+		walletClient,
+	});
 
   // Set as global adapter - now all SDK classes will use this automatically
   setGlobalAdapter(adapter)

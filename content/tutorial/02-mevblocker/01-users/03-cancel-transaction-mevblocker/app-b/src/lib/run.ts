@@ -8,12 +8,14 @@ export async function run(publicClient: PublicClient, walletClient: WalletClient
 	const tx = {
 		to: ownerAddress,
 		value: parseEther('0.01'),
-		nonce
+		nonce,
+		account: walletClient.account
 	};
 
 	const cancellation = {
 		to: ownerAddress,
-		nonce
+		nonce,
+		account: walletClient.account
 	};
 
 	const [hash, _] = await Promise.all([

@@ -6,7 +6,8 @@ export async function run(publicClient: PublicClient, walletClient: WalletClient
 
 	const tx = {
 		to: ownerAddress,
-		value: parseEther('0.01')
+		value: parseEther('0.01'),
+		account: walletClient.account
 	};
 
 	// Send the transaction

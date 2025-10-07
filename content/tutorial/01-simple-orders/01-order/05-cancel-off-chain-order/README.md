@@ -10,78 +10,40 @@ One of the many advantages of CoW Protocol and the use of intents is that we can
 
 To cancel an order, we need to know the `orderUid` of the order we want to cancel. This is the unique identifier you received in the last tutorial.
 
-### Instantiate the SDK
-
-We will start from the basic setup from the [quote tutorial](/tutorial/quote-order) after we have instantiated the `OrderBookApi` and configured the `signer`.
-
-### Cancellation parameters
-
-Now that we have an instantiated `OrderBookApi`, we can cancel an order. To do this, we need to know:
-
-- the `orderUid` of the order we want to cancel, for example `0x8464affce2df48b60f6976e51414dbc079e9c30ef64f4c1f78c7abe2c7f96a0c29104bb91ada737a89393c78335e48ff4708727e659523a1`
-
-```typescript
-/// file: run.ts
-import type { Web3Provider } from '@ethersproject/providers';
-import { SupportedChainId, OrderBookApi } from '@cowprotocol/cow-sdk';
-
-export async function run(provider: Web3Provider): Promise<unknown> {
-    // ...
-
-    const orderUid = `0x8464affce2df48b60f6976e51414dbc079e9c30ef64f4c1f78c7abe2c7f96a0c29104bb91ada737a89393c78335e48ff4708727e659523a1`;
-
-    // ...
-}
-```
-
-### Signing the cancellation
-
-Just like we did in the [sign order tutorial](/tutorial/sign-order), we need to sign the cancellation. To do this, we will use the `OrderSigningUtils` utility.
-
-```typescript
-/// file: run.ts
-import type { Web3Provider } from '@ethersproject/providers';
-+++import { SupportedChainId, OrderBookApi, OrderSigningUtils } from '@cowprotocol/cow-sdk';+++
-
-export async function run(provider: Web3Provider): Promise<unknown> {
-    // ...
-
-    const orderCancellationsSigningResult = await OrderSigningUtils.signOrderCancellations({
-        [orderUid],
-        chainId,
-        signer
-    });
-
-    // ...
-}
-```
-
-> The cancellation API endpoint for a single `orderUid` is marked deprecated. This is why we are using the plural version of the API endpoint (and hey, it's more efficient too!).
-
 ### Cancelling the order
 
-Now that we have the signature, we can attempt to cancel the order:
+The `TradingSdk` provides a convenient `offChainCancelOrder` method that handles signing and sending the cancellation in one step. We simply need to provide the `orderUid`:
 
 ```typescript
 /// file: run.ts
-import type { Web3Provider } from '@ethersproject/providers';
-import { SupportedChainId, OrderBookApi, OrderSigningUtils } from '@cowprotocol/cow-sdk';
+import type { PublicClient, WalletClient } from 'viem';
+import { SupportedChainId, TradingSdk } from '@cowprotocol/cow-sdk';
+import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter';
 
-export async function run(provider: Web3Provider): Promise<unknown> {
-    // ...
+export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
+	// ...
 
-    try {
-        const cancellationsResult = await orderBookApi.sendSignedOrderCancellations({
-            ...orderCancellationsSigningResult,
-            orderUids: [orderUid]
-        });
+  // Put an open order uid, otherwise you will see `OrderFullyExecuted` as a result
+	const orderUid =
+		'0x8464affce2df48b60f6976e51414dbc079e9c30ef64f4c1f78c7abe2c7f96a0c29104bb91ada737a89393c78335e48ff4708727e659523a1';
 
-        return { cancellationsResult };
-    } catch (e) {
-        return e;
-    }
+	try {
+		const cancellationResult = await sdk.offChainCancelOrder({ orderUid });
+
+		return {
+			success: cancellationResult,
+			message: 'Order cancelled successfully'
+		};
+	} catch (e) {
+		return e;
+	}
 }
 ```
+
+The `offChainCancelOrder` method:
+- Signs the cancellation using the wallet
+- Sends the cancellation to the CoW Protocol API
+- Returns `true` if the cancellation is successful
 
 Just as we did in the [submit order tutorial](/tutorial/submit-order), we are using a `try/catch` block to handle errors.
 
@@ -93,18 +55,20 @@ When running the script, we may be asked to connect a wallet. We can use Rabby f
 
 1. Accept the connection request in Rabby
 2. Press the "Run" button again
-3. Observe the cancellation result returned to the output panel
+3. Sign the cancellation when prompted by your wallet
+4. Observe the cancellation result returned to the output panel
 
 A successful cancellation should look like:
 
 ```json
 /// file: output.json
 {
-    "cancellationsResult": "Cancelled"
+	"success": true,
+	"message": "Order cancelled successfully"
 }
 ```
 
-> The API simply returns `200` and `"Cancelled"` if the cancellation is successful.
+> The `offChainCancelOrder` method returns `true` if the cancellation is successful.
 
 ### Errors
 

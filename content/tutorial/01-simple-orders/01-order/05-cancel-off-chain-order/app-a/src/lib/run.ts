@@ -1,13 +1,6 @@
 import type { PublicClient, WalletClient } from 'viem';
-import { SupportedChainId, OrderBookApi, setGlobalAdapter } from '@cowprotocol/cow-sdk';
+import { SupportedChainId, TradingSdk } from '@cowprotocol/cow-sdk';
 import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter';
-
-// Helper function to setup adapter (will be used in all tutorials from now on)
-function setupAdapter(publicClient: PublicClient, walletClient: WalletClient) {
-	const adapter = new ViemAdapter({ provider: publicClient, walletClient });
-	setGlobalAdapter(adapter);
-	return { adapter };
-}
 
 export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
 	const chainId = await publicClient.getChainId();
@@ -15,9 +8,17 @@ export async function run(publicClient: PublicClient, walletClient: WalletClient
 		throw new Error(`Please connect to the Gnosis chain. ChainId: ${chainId}`);
 	}
 
-	const orderBookApi = new OrderBookApi({ chainId: SupportedChainId.GNOSIS_CHAIN });
+	const adapter = new ViemAdapter({
+		provider: publicClient,
+		walletClient,
+	});
 
-	const { adapter } = setupAdapter(publicClient, walletClient);
+	const sdk = new TradingSdk({
+		chainId: SupportedChainId.GNOSIS_CHAIN,
+		appCode: 'CoW Swap',
+	}, {}, adapter);
+
+	// TODO: Cancel an order using sdk.offChainCancelOrder()
 
 	return {};
 }

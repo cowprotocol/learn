@@ -33,6 +33,7 @@ export async function run(publicClient: PublicClient, walletClient: WalletClient
 	const { postSwapOrderFromQuote } = await sdk.getQuote(parameters);
 
 	const postingResult = await postSwapOrderFromQuote({
+		// Optional: you can specify advanced settings before posting an order
 		quoteRequest: {
 			validTo: Math.ceil((Date.now() + (120 * 1000)) / 1000) // 2 min
 		}

@@ -2,45 +2,43 @@
 title: Submitting
 ---
 
-Further building on the previous tutorial, we will now submit the order we signed in the [sign order tutorial](/tutorial/sign-order) to CoW Protocol.
+Further building on the previous tutorial, we will now submit an order to CoW Protocol using the TradingSdk.
 
-## Submitting an order
+## Submitting the order
 
-Submitting orders to the API may very well result in an error. For this reason, we should **ALWAYS** handle errors. To do this, we will use the `try/catch` syntax.
+The TradingSdk simplifies order submission by providing the `postSwapOrderFromQuote` function. This function handles signing and posting the order in one step:
 
 ```typescript
 /// file: run.ts
-import type { Web3Provider } from '@ethersproject/providers';
-import {
-	OrderBookApi,
-	SupportedChainId,
-	OrderQuoteRequest,
-	OrderQuoteSideKindSell,
-	OrderSigningUtils,
-	UnsignedOrder,
-	SigningScheme
-} from '@cowprotocol/cow-sdk';
+import type { PublicClient, WalletClient } from 'viem';
+import { SupportedChainId, OrderKind, TradingSdk, TradeParameters } from '@cowprotocol/cow-sdk';
+import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter';
 
-export async function run(provider: Web3Provider): Promise<unknown> {
+export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
 	// ...
 
-	try {
-		const orderId = await orderBookApi.sendOrder({
-			...quote,
-			...orderSigningResult,
-			sellAmount: order.sellAmount, // replace quote sellAmount with signed order sellAmount, which is equal to original sellAmount
-			feeAmount: order.feeAmount, // replace quote feeAmount with signed order feeAmount, which is 0
-			signingScheme: orderSigningResult.signingScheme as unknown as SigningScheme
-		});
+	const { postSwapOrderFromQuote } = await sdk.getQuote(parameters);
 
-		return { orderId };
-	} catch (e) {
-		return e;
-	}
+	const postingResult = await postSwapOrderFromQuote({
+    // Optional: you can specify advanced settings before posting an order
+		quoteRequest: {
+			validTo: Math.ceil((Date.now() + (120 * 1000)) / 1000) // 2 min
+		}
+	});
+
+	return {
+		explorerLink: `https://explorer.cow.fi/search/${postingResult.orderId}`,
+		postingResult
+	};
 }
 ```
 
-> Currently the `OrderSigningResult` returns an enum which is not compatible with the `SigningScheme` type. This is why we need to cast it to `unknown` and then to `SigningScheme`.
+The `postSwapOrderFromQuote` function:
+- Signs the order using the wallet
+- Posts the order to the CoW Protocol API
+- Returns the posting result including the `orderId`
+
+You can optionally pass advanced settings such as `validTo` to customize the order expiration time.
 
 ## Run the code
 
@@ -50,18 +48,22 @@ When running the script, we may be asked to connect a wallet. We can use Rabby f
 
 1. Accept the connection request in Rabby
 2. Press the "Run" button again
-3. Observe the `orderId` returned to the output panel
+3. Sign the order when prompted by your wallet
+4. Observe the posting result returned to the output panel
 
-An example `orderId` should look like:
+An example result should look like:
 
 ```json
 /// file: output.json
 {
-	"orderId": "0xae842840f65743bc84190a68da1e4adf1771b242fa903b6c2e87bc5050e07c1329104bb91ada737a89393c78335e48ff4708727e65952d5e"
+	"explorerLink": "https://explorer.cow.fi/search/0xae842840f65743bc84190a68da1e4adf1771b242fa903b6c2e87bc5050e07c1329104bb91ada737a89393c78335e48ff4708727e65952d5e",
+	"postingResult": {
+		// ...
+	}
 }
 ```
 
-> The [`orderId`](https://docs.cow.fi/cow-protocol/reference/contracts/core/settlement#orderuid) is the unique identifier for the order we have just submitted. We can use this `orderId` (also known as `orderUid`) to check the status of the order on [CoW Explorer](https://docs.cow.fi/cow-protocol/tutorials/cow-explorer/order). Keep this handy, as we will practice some more with this `orderId` in the next tutorial!
+> The [`orderId`](https://docs.cow.fi/cow-protocol/reference/contracts/core/settlement#orderuid) is the unique identifier for the order we have just submitted. We can use this `orderId` (also known as `orderUid`) to check the status of the order on [CoW Explorer](https://docs.cow.fi/cow-protocol/tutorials/cow-explorer/order). You can click the `explorerLink` to view your order directly.
 
 ### Errors
 

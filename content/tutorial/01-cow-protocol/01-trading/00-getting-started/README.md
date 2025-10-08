@@ -49,9 +49,12 @@ Let's finish the code snippet by adding some debugging and returning a value:
 ```typescript
 /// file: run.ts
 import type { PublicClient, WalletClient } from 'viem'
+import { SupportedChainId } from '@cowprotocol/cow-sdk';
 
 export async function run(setup: (chainId: SupportedChainId) => Promise<{ publicClient: PublicClient; walletClient: WalletClient }>): Promise<unknown> {
   console.log('Hello world!');
+
+  const { publicClient, walletClient } = await setup(SupportedChainId.GNOSIS_CHAIN)
 
   // Get the chain ID and connected account
   const chainId = await publicClient.getChainId()

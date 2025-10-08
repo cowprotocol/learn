@@ -4,7 +4,6 @@ import './types.ts';
 import { Buffer } from 'buffer';
 import { run } from './lib/run.ts';
 import { setupWeb3Provider, walletClient } from './web3-provider.ts';
-import { gnosis } from 'viem/chains';
 import { jsonWithBigintReplacer } from '@cowprotocol/cow-sdk';
 
 window.Buffer = Buffer; // Yep, this is a hack
@@ -86,7 +85,6 @@ function connectWallet(appContainer: HTMLDivElement) {
 	const connectWalletBtn = document.querySelector<HTMLButtonElement>('#connectWallet')!;
 
 	connectWalletBtn.addEventListener('click', async () => {
-		await walletClient!.switchChain({ id: gnosis.id });
 		await walletClient!.request({ method: 'eth_requestAccounts' });
 		initExercise(appContainer);
 	});

@@ -20,8 +20,6 @@ import type { PublicClient, WalletClient } from 'viem';
 import { SupportedChainId, TradingSdk } from '@cowprotocol/cow-sdk';
 import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter';
 
-import { SupportedChainId } from "@cowprotocol/cow-sdk"
-
 export async function run(
     setup: (chainId: SupportedChainId) => Promise<{ publicClient: PublicClient; walletClient: WalletClient }>
 ): Promise<unknown> {

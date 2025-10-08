@@ -111,7 +111,7 @@ export async function run(setup: (chainId: SupportedChainId) => Promise<{ public
     // ...
     const { quoteResults } = await sdk.getQuote(parameters);
 
-    return quoteResults;
+    return quoteResults.amountsAndCosts;
 }
 ```
 

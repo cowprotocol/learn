@@ -1,7 +1,11 @@
-import type { Web3Provider } from '@ethersproject/providers'
+import type { PublicClient, WalletClient } from 'viem';
+import { SupportedChainId } from '@cowprotocol/cow-sdk';
 
-export async function run(provider: Web3Provider): Promise<unknown> {
-  console.log(provider)
+export async function run(
+	setup: (chainId: SupportedChainId) => Promise<{ publicClient: PublicClient; walletClient: WalletClient }>
+): Promise<unknown> {
+	const { publicClient, walletClient } = await setup(SupportedChainId.GNOSIS_CHAIN)
+	console.log({ publicClient, walletClient });
 
-  return Promise.resolve('')
+	return Promise.resolve('');
 }

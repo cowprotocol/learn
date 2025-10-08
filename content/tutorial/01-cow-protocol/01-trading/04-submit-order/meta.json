@@ -1,8 +1,8 @@
 {
-	"title": "Submit order",
-	"scope": {
-		"prefix": "/src/lib/",
-		"name": "src"
-	},
-	"focus": "/src/lib/run.ts"
+  "title": "Submit order",
+  "scope": {
+    "prefix": "/src/lib/",
+    "name": "src"
+  },
+  "focus": "/src/lib/run.ts"
 }

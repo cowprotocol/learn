@@ -1,8 +1,8 @@
 {
-	"title": "Approve CoW Protocol",
-	"scope": {
-		"prefix": "/src/lib/",
-		"name": "src"
-	},
-	"focus": "/src/lib/run.ts"
+  "title": "Approve CoW Protocol",
+  "scope": {
+    "prefix": "/src/lib/",
+    "name": "src"
+  },
+  "focus": "/src/lib/run.ts"
 }

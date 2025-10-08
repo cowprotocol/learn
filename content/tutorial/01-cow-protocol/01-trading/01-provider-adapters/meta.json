@@ -1,8 +1,8 @@
 {
-	"title": "Provider Adapters",
-	"scope": {
-		"prefix": "/src/lib/",
-		"name": "src"
-	},
-	"focus": "/src/lib/run.ts"
+  "title": "Provider Adapters",
+  "scope": {
+    "prefix": "/src/lib/",
+    "name": "src"
+  },
+  "focus": "/src/lib/run.ts"
 }

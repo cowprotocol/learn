@@ -1,10 +1,11 @@
 import type { PublicClient, WalletClient } from 'viem';
+import { SupportedChainId } from '@cowprotocol/cow-sdk';
 
 export async function run(
-	publicClient: PublicClient,
-	walletClient: WalletClient
+	setup: (chainId: SupportedChainId) => Promise<{ publicClient: PublicClient; walletClient: WalletClient }>
 ): Promise<unknown> {
-	console.log({publicClient, walletClient});
+	const { publicClient, walletClient } = await setup(SupportedChainId.GNOSIS_CHAIN)
+	console.log({ publicClient, walletClient });
 
 	return Promise.resolve('');
 }

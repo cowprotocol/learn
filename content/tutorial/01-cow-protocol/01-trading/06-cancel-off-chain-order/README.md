@@ -20,7 +20,12 @@ import type { PublicClient, WalletClient } from 'viem';
 import { SupportedChainId, TradingSdk } from '@cowprotocol/cow-sdk';
 import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter';
 
-export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
+import { SupportedChainId } from "@cowprotocol/cow-sdk"
+
+export async function run(
+    setup: (chainId: SupportedChainId) => Promise<{ publicClient: PublicClient; walletClient: WalletClient }>
+): Promise<unknown> {
+const { publicClient, walletClient } = await setup(SupportedChainId.GNOSIS_CHAIN)
 	// ...
 
   // Put an open order uid, otherwise you will see `OrderFullyExecuted` as a result
@@ -41,6 +46,7 @@ export async function run(publicClient: PublicClient, walletClient: WalletClient
 ```
 
 The `offChainCancelOrder` method:
+
 - Signs the cancellation using the wallet
 - Sends the cancellation to the CoW Protocol API
 - Returns `true` if the cancellation is successful

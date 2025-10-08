@@ -1,6 +1,11 @@
 import type { PublicClient, WalletClient } from 'viem';
 
-export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
+import { SupportedChainId } from '@cowprotocol/cow-sdk';
+
+export async function run(
+	setup: (chainId: SupportedChainId) => Promise<{ publicClient: PublicClient; walletClient: WalletClient }>
+): Promise<unknown> {
+	const { publicClient, walletClient } = await setup(SupportedChainId.MAINNET);
 	const networkConfig = {
 		chainId: '0x1', // Mainnet
 		chainName: 'MEV Blocker',

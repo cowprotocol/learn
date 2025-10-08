@@ -23,7 +23,7 @@ Let's look at the current code snippet:
 /// file: run.ts
 import type { PublicClient, WalletClient } from 'viem'
 
-export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
+export async function run(setup: (chainId: SupportedChainId) => Promise<{ publicClient: PublicClient; walletClient: WalletClient }>): Promise<unknown> {
   // TODO: Implement
 }
 ```
@@ -50,7 +50,7 @@ Let's finish the code snippet by adding some debugging and returning a value:
 /// file: run.ts
 import type { PublicClient, WalletClient } from 'viem'
 
-export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
+export async function run(setup: (chainId: SupportedChainId) => Promise<{ publicClient: PublicClient; walletClient: WalletClient }>): Promise<unknown> {
   console.log('Hello world!');
 
   // Get the chain ID and connected account

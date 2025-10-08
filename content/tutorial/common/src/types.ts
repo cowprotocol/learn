@@ -1,7 +1,7 @@
-import type { ExternalProvider } from '@ethersproject/providers'
+import type { ExternalProvider } from '@ethersproject/providers';
 
 declare global {
-    interface Window {
-        ethereum: ExternalProvider & {enable(): Promise<void>}
-    }
+	interface Window {
+		ethereum: ExternalProvider & { enable(): Promise<void> };
+	}
 }

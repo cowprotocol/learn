@@ -15,8 +15,8 @@ For this, we need to craft the transaction object containing our address as `to`
 ```typescript
 /// file: run.ts
 const tx = {
-	to: await signer.getAddress(),
-	value: utils.parseEther('0.01')
+  to: await signer.getAddress(),
+  value: utils.parseEther('0.01')
 };
 ```
 

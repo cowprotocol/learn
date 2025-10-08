@@ -14,26 +14,32 @@ import type { PublicClient, WalletClient } from 'viem';
 import { SupportedChainId, OrderKind, TradingSdk, TradeParameters } from '@cowprotocol/cow-sdk';
 import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter';
 
-export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
-	// ...
+import { SupportedChainId } from "@cowprotocol/cow-sdk"
 
-	const { postSwapOrderFromQuote } = await sdk.getQuote(parameters);
+export async function run(
+  setup: (chainId: SupportedChainId) => Promise<{ publicClient: PublicClient; walletClient: WalletClient }>
+): Promise<unknown> {
+  const { publicClient, walletClient } = await setup(SupportedChainId.GNOSIS_CHAIN)
+  // ...
 
-	const postingResult = await postSwapOrderFromQuote({
+  const { postSwapOrderFromQuote } = await sdk.getQuote(parameters);
+
+  const postingResult = await postSwapOrderFromQuote({
     // Optional: you can specify advanced settings before posting an order
-		quoteRequest: {
-			validTo: Math.ceil((Date.now() + (120 * 1000)) / 1000) // 2 min
-		}
-	});
+    quoteRequest: {
+      validTo: Math.ceil((Date.now() + (120 * 1000)) / 1000) // 2 min
+    }
+  });
 
-	return {
-		explorerLink: `https://explorer.cow.fi/search/${postingResult.orderId}`,
-		postingResult
-	};
+  return {
+    explorerLink: `https://explorer.cow.fi/search/${postingResult.orderId}`,
+    postingResult
+  };
 }
 ```
 
 The `postSwapOrderFromQuote` function:
+
 - Signs the order using the wallet
 - Posts the order to the CoW Protocol API
 - Returns the posting result including the `orderId`
@@ -56,10 +62,10 @@ An example result should look like:
 ```json
 /// file: output.json
 {
-	"explorerLink": "https://explorer.cow.fi/search/0xae842840f65743bc84190a68da1e4adf1771b242fa903b6c2e87bc5050e07c1329104bb91ada737a89393c78335e48ff4708727e65952d5e",
-	"postingResult": {
-		// ...
-	}
+  "explorerLink": "https://explorer.cow.fi/search/0xae842840f65743bc84190a68da1e4adf1771b242fa903b6c2e87bc5050e07c1329104bb91ada737a89393c78335e48ff4708727e65952d5e",
+  "postingResult": {
+    // ...
+  }
 }
 ```
 

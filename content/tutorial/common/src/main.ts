@@ -1,16 +1,16 @@
-import './style.css'
-import './types.ts'
+import './style.css';
+import './types.ts';
 
-import { Buffer } from 'buffer'
-window.Buffer = Buffer // Yep, this is a hack
-
-import { run } from './lib/run.ts'
-import { publicClient, walletClient } from './web3-provider.ts'
+import { Buffer } from 'buffer';
+import { run } from './lib/run.ts';
+import { setupWeb3Provider, walletClient } from './web3-provider.ts';
 import { gnosis } from 'viem/chains';
 import { jsonWithBigintReplacer } from '@cowprotocol/cow-sdk';
 
+window.Buffer = Buffer; // Yep, this is a hack
+
 function ping() {
-  window.parent.postMessage({type: 'ping'}, '*')
+	window.parent.postMessage({ type: 'ping' }, '*');
 }
 
 /**
@@ -23,78 +23,71 @@ setInterval(ping, 200);
 /**
  * Check if the user is connected to the wallet
  */
-(async function(){
-  const appContainer = document.querySelector<HTMLDivElement>('#app')!
+(async function () {
+	const appContainer = document.querySelector<HTMLDivElement>('#app')!;
 
-  // There is no injected wallet in the browser
-  if (!publicClient || !walletClient) {
-    appContainer.innerHTML = `
+	// There is no injected wallet in the browser
+	if (!window.ethereum) {
+		appContainer.innerHTML = `
       <p>Please, install some injected browser wallet first. For example: Rabby, Metamask</p>
-    `
-    return
-  }
+    `;
+		return;
+	}
 
-  const accounts = await walletClient.getAddresses()
+	const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
 
-  // Wallet is already connected
-  if (accounts.length) {
-    initExercise(appContainer)
-    return
-  }
+	// Wallet is already connected
+	if (accounts.length) {
+		initExercise(appContainer);
+		return;
+	}
 
-  // Wallet is not connected
-  appContainer.innerHTML = `
+	// Wallet is not connected
+	appContainer.innerHTML = `
       <p>Connect your wallet to continue</p>
       <button id="connectWallet">Connect wallet</button>
-    `
+    `;
 
-  connectWallet(appContainer)
+	connectWallet(appContainer);
 
-  return
-})()
+	return;
+})();
 
 function initExercise(appContainer: HTMLDivElement) {
-  appContainer.innerHTML = `
+	appContainer.innerHTML = `
       <button id="runExample">Run example</button>
       <br/>
       <p>Output:</p>
       <textarea id="outputContainer" readonly></textarea>
-    `
+    `;
 
-  const runExampleBtn = document.querySelector<HTMLButtonElement>('#runExample')!
-  const outputContainer = document.querySelector<HTMLTextAreaElement>('#outputContainer')!
+	const runExampleBtn = document.querySelector<HTMLButtonElement>('#runExample')!;
+	const outputContainer = document.querySelector<HTMLTextAreaElement>('#outputContainer')!;
 
-  // Launch exercise
-  runExampleBtn.addEventListener('click', async () => {
-    runExampleBtn.innerHTML = 'Running...'
+	// Launch exercise
+	runExampleBtn.addEventListener('click', async () => {
+		runExampleBtn.innerHTML = 'Running...';
 
-		await walletClient!.switchChain({ id: gnosis.id })
-		const accounts = await walletClient!.request({ method: 'eth_requestAccounts' })
-
-		walletClient!.account = {
-			address: accounts[0],
-			type: 'json-rpc'
-		}
-
-		console.log('Assign account to walletClient', walletClient, accounts[0])
-
-    run(publicClient!, walletClient!).then(result => {
-      outputContainer.innerHTML = JSON.stringify(result, jsonWithBigintReplacer, 4)
-    }).catch(error => {
-			console.error(error)
-      outputContainer.innerHTML = error.message
-    }).finally(() => {
-      runExampleBtn.innerHTML = 'Run example'
-    })
-  })
+		run(setupWeb3Provider)
+			.then((result) => {
+				outputContainer.innerHTML = JSON.stringify(result, jsonWithBigintReplacer, 4);
+			})
+			.catch((error) => {
+				console.error(error);
+				outputContainer.innerHTML = error.message;
+			})
+			.finally(() => {
+				runExampleBtn.innerHTML = 'Run example';
+			});
+	});
 }
 
 function connectWallet(appContainer: HTMLDivElement) {
-  const connectWalletBtn = document.querySelector<HTMLButtonElement>('#connectWallet')!
+	const connectWalletBtn = document.querySelector<HTMLButtonElement>('#connectWallet')!;
 
-  connectWalletBtn.addEventListener('click', async () => {
-		await walletClient!.switchChain({ id: gnosis.id })
-		await walletClient!.request({ method: 'eth_requestAccounts' })
-		initExercise(appContainer)
-  })
+	connectWalletBtn.addEventListener('click', async () => {
+		await walletClient!.switchChain({ id: gnosis.id });
+		await walletClient!.request({ method: 'eth_requestAccounts' });
+		initExercise(appContainer);
+	});
 }

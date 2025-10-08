@@ -13,6 +13,7 @@ CoW Protocol uses the [GPv2VaultRelayer](https://docs.cow.fi/cow-protocol/refere
 ## Using approveCowProtocol
 
 The `approveCowProtocol` method simplifies the approval process by:
+
 - Automatically determining the correct relayer address for your chain
 - Checking current allowance
 - Executing the approval transaction if needed
@@ -25,46 +26,47 @@ import type { PublicClient, WalletClient } from 'viem';
 import { SupportedChainId, OrderKind, TradingSdk, TradeParameters } from '@cowprotocol/cow-sdk';
 import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter';
 
-export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
-	const chainId = await publicClient.getChainId();
-	if (chainId !== SupportedChainId.GNOSIS_CHAIN) {
-		throw new Error(`Please connect to the Gnosis chain. ChainId: ${chainId}`);
-	}
+import { SupportedChainId } from "@cowprotocol/cow-sdk"
 
-	const adapter = new ViemAdapter({
-		provider: publicClient,
-		walletClient,
-	});
+export async function run(
+  setup: (chainId: SupportedChainId) => Promise<{ publicClient: PublicClient; walletClient: WalletClient }>
+): Promise<unknown> {
+  const { publicClient, walletClient } = await setup(SupportedChainId.GNOSIS_CHAIN)
 
-	const sdk = new TradingSdk({
-		chainId: SupportedChainId.GNOSIS_CHAIN,
-		appCode: 'CoW Swap',
-	}, {}, adapter);
+  const adapter = new ViemAdapter({
+    provider: publicClient,
+    walletClient,
+  });
 
-	const sellToken = '0xe91d153e0b41518a2ce8dd3d7944fa863463a97d'; // wxDAI
-	const buyToken = '0x177127622c4A00F3d409B75571e12cB3c8973d3c'; // COW
+  const sdk = new TradingSdk({
+    chainId: SupportedChainId.GNOSIS_CHAIN,
+    appCode: 'CoW Swap',
+  }, {}, adapter);
 
-	const parameters: TradeParameters = {
-		kind: OrderKind.SELL,
-		sellToken,
-		sellTokenDecimals: 18,
-		buyToken,
-		buyTokenDecimals: 18,
-		amount: '1000000000000000000', // 1 wxDAI
-	};
+  const sellToken = '0xe91d153e0b41518a2ce8dd3d7944fa863463a97d'; // wxDAI
+  const buyToken = '0x177127622c4A00F3d409B75571e12cB3c8973d3c'; // COW
 
-	const { quoteResults } = await sdk.getQuote(parameters);
+  const parameters: TradeParameters = {
+    kind: OrderKind.SELL,
+    sellToken,
+    sellTokenDecimals: 18,
+    buyToken,
+    buyTokenDecimals: 18,
+    amount: '1000000000000000000', // 1 wxDAI
+  };
 
-	// Approve CoW Protocol to spend the sell token
-	const approvalTx = await sdk.approveCowProtocol({
-		tokenAddress: sellToken,
-		amount: parameters.amount, // You can also use a larger amount or 'max' for unlimited approval
-	});
+  const { quoteResults } = await sdk.getQuote(parameters);
 
-	return {
-		approvalTxHash: approvalTx,
-		message: 'CoW Protocol has been approved to spend your wxDAI'
-	};
+  // Approve CoW Protocol to spend the sell token
+  const approvalTx = await sdk.approveCowProtocol({
+    tokenAddress: sellToken,
+    amount: parameters.amount, // You can also use a larger amount or 'max' for unlimited approval
+  });
+
+  return {
+    approvalTxHash: approvalTx,
+    message: 'CoW Protocol has been approved to spend your wxDAI'
+  };
 }
 ```
 
@@ -84,8 +86,8 @@ The `approveCowProtocol` method accepts the following parameters:
 /// file: run.ts
 // Approve unlimited amount
 const approvalTx = await sdk.approveCowProtocol({
-	tokenAddress: sellToken,
-	amount: 'max', // Unlimited approval
+  tokenAddress: sellToken,
+  amount: 'max', // Unlimited approval
 });
 ```
 
@@ -101,6 +103,7 @@ When running the script:
 4. Wait for the transaction to be confirmed
 
 The output will show:
+
 - The transaction hash of the approval
 - A confirmation message
 

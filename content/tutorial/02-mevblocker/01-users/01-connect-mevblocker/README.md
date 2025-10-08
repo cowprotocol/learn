@@ -8,8 +8,8 @@ Connecting to MEV Blocker is as as simple as setting the right URL to connect to
 
 Different endpoints with different protections are available:
 
-|                 | Frontrunning      | Backrunning | Revert           |
-| --------------- | ----------------- | ----------- | ---------------- |
+|                 | Frontrunning     | Backrunning | Revert          |
+|-----------------|------------------|-------------|-----------------|
 | /fast (default) | ✅ Protected      | 💰 Refund   | ❌ Not Protected |
 | /noreverts      | ✅ Protected      | 💰 Refund   | ✅ Protected     |
 | /fullprivacy    | ✅ Max protection | ⦰ No refund | ✅ Protected     |

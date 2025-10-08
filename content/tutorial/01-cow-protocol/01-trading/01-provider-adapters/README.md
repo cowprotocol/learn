@@ -9,6 +9,7 @@ The CoW Protocol SDK is designed to work with multiple Ethereum libraries throug
 Provider adapters are wrapper classes that provide a unified interface to different Ethereum libraries. They handle the differences between libraries so you don't have to worry about implementation details.
 
 **Supported adapters:**
+
 - ✅ **ViemAdapter** - For Viem (used in these tutorials)
 - ✅ **EthersV6Adapter** - For Ethers v6
 - ✅ **EthersV5Adapter** - For Ethers v5
@@ -18,6 +19,7 @@ Provider adapters are wrapper classes that provide a unified interface to differ
 While these tutorials use **Viem**, here's how you would initialize each adapter:
 
 ### Viem Adapter
+
 ```typescript
 /// file: run.ts
 import { setGlobalAdapter } from '@cowprotocol/cow-sdk'
@@ -44,6 +46,7 @@ setGlobalAdapter(adapter)
 ```
 
 ### EthersV6 Adapter
+
 ```typescript
 /// file: run.ts
 import { setGlobalAdapter } from '@cowprotocol/cow-sdk'
@@ -58,6 +61,7 @@ setGlobalAdapter(adapter)
 ```
 
 ### EthersV5 Adapter
+
 ```typescript
 /// file: run.ts
 import { setGlobalAdapter } from '@cowprotocol/cow-sdk'
@@ -167,7 +171,7 @@ adapter.setSigner(newWalletClient.account!)
 Let's test the adapter configuration by:
 
 1. Creating an EthersV5Adapter
-2. Setting it as the global adapter  
+2. Setting it as the global adapter
 3. Verifying it works correctly
 
 The adapter handles blockchain operations like getting chain ID, addresses, and signing - all the low-level details you need for trading on CoW Protocol.

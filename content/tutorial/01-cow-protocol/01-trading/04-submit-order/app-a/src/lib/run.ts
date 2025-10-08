@@ -1,22 +1,25 @@
-import type { PublicClient, WalletClient } from 'viem'
-import { SupportedChainId, OrderKind, TradingSdk, TradeParameters } from '@cowprotocol/cow-sdk'
-import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter'
+import type { PublicClient, WalletClient } from 'viem';
+import { OrderKind, SupportedChainId, TradeParameters, TradingSdk } from '@cowprotocol/cow-sdk';
+import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter';
 
-export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
-	const chainId = await publicClient.getChainId();
-	if (chainId !== SupportedChainId.GNOSIS_CHAIN) {
-		throw new Error(`Please connect to the Gnosis chain. ChainId: ${chainId}`);
-	}
+export async function run(
+	setup: (chainId: SupportedChainId) => Promise<{ publicClient: PublicClient; walletClient: WalletClient }>
+): Promise<unknown> {
+	const { publicClient, walletClient } = await setup(SupportedChainId.GNOSIS_CHAIN);
 
 	const adapter = new ViemAdapter({
 		provider: publicClient,
-		walletClient,
+		walletClient
 	});
 
-	const sdk = new TradingSdk({
-		chainId: SupportedChainId.GNOSIS_CHAIN,
-		appCode: 'CoW Swap',
-	}, {}, adapter);
+	const sdk = new TradingSdk(
+		{
+			chainId: SupportedChainId.GNOSIS_CHAIN,
+			appCode: 'CoW Swap'
+		},
+		{},
+		adapter
+	);
 
 	const sellToken = '0xe91d153e0b41518a2ce8dd3d7944fa863463a97d'; // wxDAI
 	const buyToken = '0x177127622c4A00F3d409B75571e12cB3c8973d3c'; // COW
@@ -27,10 +30,16 @@ export async function run(publicClient: PublicClient, walletClient: WalletClient
 		sellTokenDecimals: 18,
 		buyToken,
 		buyTokenDecimals: 18,
-		amount: '1000000000000000000', // 1 wxDAI
+		amount: '1000000000000000000' // 1 wxDAI
 	};
 
-	const { quoteResults: {quoteResponse: {quote}, amountsAndCosts: {afterSlippage}}, postSwapOrderFromQuote } = await sdk.getQuote(parameters);
+	const {
+		quoteResults: {
+			quoteResponse: { quote },
+			amountsAndCosts: { afterSlippage }
+		},
+		postSwapOrderFromQuote
+	} = await sdk.getQuote(parameters);
 
 	// TODO: call postSwapOrderFromQuote() to sign the order
 

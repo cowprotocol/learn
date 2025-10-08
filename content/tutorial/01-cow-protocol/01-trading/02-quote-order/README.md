@@ -17,11 +17,8 @@ CoW Protocol supports multiple environments (e.g. mainnet, gnosis chain, sepolia
 import type { PublicClient, WalletClient } from 'viem';
 +++import { SupportedChainId } from '@cowprotocol/cow-sdk';+++
 
-export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
-    const chainId = await publicClient.getChainId();
-    if (chainId !== SupportedChainId.GNOSIS_CHAIN) {
-        throw new Error(`Please connect to the Gnosis chain. ChainId: ${chainId}`);
-    }
+export async function run(setup: (chainId: SupportedChainId) => Promise<{ publicClient: PublicClient; walletClient: WalletClient }>): Promise<unknown> {
+
 }
 ```
 
@@ -35,7 +32,7 @@ import type { PublicClient, WalletClient } from 'viem';
 +++import { SupportedChainId, TradingSdk } from '@cowprotocol/cow-sdk';+++
 +++import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter';+++
 
-export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
+export async function run(setup: (chainId: SupportedChainId) => Promise<{ publicClient: PublicClient; walletClient: WalletClient }>): Promise<unknown> {
     // ...
     const adapter = new ViemAdapter({
         provider: publicClient,
@@ -55,7 +52,7 @@ import type { PublicClient, WalletClient } from 'viem';
 import { SupportedChainId, TradingSdk } from '@cowprotocol/cow-sdk';
 import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter';
 
-export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
+export async function run(setup: (chainId: SupportedChainId) => Promise<{ publicClient: PublicClient; walletClient: WalletClient }>): Promise<unknown> {
     // ...
     const sdk = new TradingSdk({
         chainId: SupportedChainId.GNOSIS_CHAIN,
@@ -83,7 +80,7 @@ import type { PublicClient, WalletClient } from 'viem';
 import { SupportedChainId, TradingSdk, OrderKind, TradeParameters } from '@cowprotocol/cow-sdk';
 import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter';
 
-export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
+export async function run(setup: (chainId: SupportedChainId) => Promise<{ publicClient: PublicClient; walletClient: WalletClient }>): Promise<unknown> {
     // ...
     const sellToken = '0xe91d153e0b41518a2ce8dd3d7944fa863463a97d'; // wxDAI
     const buyToken = '0x177127622c4A00F3d409B75571e12cB3c8973d3c'; // COW
@@ -110,7 +107,7 @@ import type { PublicClient, WalletClient } from 'viem';
 import { SupportedChainId, TradingSdk, OrderKind, TradeParameters } from '@cowprotocol/cow-sdk';
 import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter';
 
-export async function run(publicClient: PublicClient, walletClient: WalletClient): Promise<unknown> {
+export async function run(setup: (chainId: SupportedChainId) => Promise<{ publicClient: PublicClient; walletClient: WalletClient }>): Promise<unknown> {
     // ...
     const { quoteResults } = await sdk.getQuote(parameters);
 

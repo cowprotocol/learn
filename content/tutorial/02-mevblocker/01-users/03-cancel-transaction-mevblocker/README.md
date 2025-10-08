@@ -17,11 +17,11 @@ To increase our chances of our target transaction not getting immediately includ
 /// file: run.ts
 const nonce = await signer.getTransactionCount();
 const tx = {
-	to: await signer.getAddress(),
-	value: utils.parseEther('0.01'),
-	maxPriorityFeePerGas: 0,
-	maxFeePerGas: utils.parseUnits('100', 'gwei'),
-	nonce
+  to: await signer.getAddress(),
+  value: utils.parseEther('0.01'),
+  maxPriorityFeePerGas: 0,
+  maxFeePerGas: utils.parseUnits('100', 'gwei'),
+  nonce
 };
 ```
 
@@ -32,8 +32,8 @@ Cancellation transactions are calls to `self` without any value or calldata, tha
 ```typescript
 /// file: run.ts
 const cancellation = {
-	to: await signer.getAddress(),
-	nonce
+  to: await signer.getAddress(),
+  nonce
 };
 ```
 
@@ -52,8 +52,8 @@ To sign both transactions using the same popup we await for both `sendTransactio
 ```typescript
 /// file: run.ts
 const [transactionResponse, _] = await Promise.all([
-	signer.sendTransaction(tx),
-	signer.sendTransaction(cancellation)
+  signer.sendTransaction(tx),
+  signer.sendTransaction(cancellation)
 ]);
 return `Cancellation sent! Check https://rpc.mevblocker.io/tx/${transactionResponse.hash}`;
 ```

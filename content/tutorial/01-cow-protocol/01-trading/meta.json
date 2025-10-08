@@ -1,8 +1,8 @@
 {
-	"title": "Trading",
-	"scope": {
-		"prefix": "/src/lib/",
-		"name": "src"
-	},
-	"focus": "/src/lib/run.ts"
+  "title": "Trading",
+  "scope": {
+    "prefix": "/src/lib/",
+    "name": "src"
+  },
+  "focus": "/src/lib/run.ts"
 }

@@ -2,7 +2,7 @@
 	"$schema": "https://openapi.vercel.sh/vercel.json",
 	"headers": [
 		{
-			"source": "_app/immutable/workers/(.*)",
+			"source": "/_app/immutable/workers/:path*",
 			"headers": [
 				{
 					"key": "cross-origin-opener-policy",
@@ -19,7 +19,88 @@
 			]
 		},
 		{
-			"source": "/(src(/.*)?|tutorial/lib(/.*)?|tutorial/types\\.ts|tutorial/web3-provider\\.ts|package\\.json|tsconfig\\.json|vite\\.config\\.ts|\\.gitignore)",
+			"source": "/src",
+			"headers": [
+				{
+					"key": "X-Robots-Tag",
+					"value": "noindex, nofollow, noarchive"
+				}
+			]
+		},
+		{
+			"source": "/src/:path*",
+			"headers": [
+				{
+					"key": "X-Robots-Tag",
+					"value": "noindex, nofollow, noarchive"
+				}
+			]
+		},
+		{
+			"source": "/tutorial/lib",
+			"headers": [
+				{
+					"key": "X-Robots-Tag",
+					"value": "noindex, nofollow, noarchive"
+				}
+			]
+		},
+		{
+			"source": "/tutorial/lib/:path*",
+			"headers": [
+				{
+					"key": "X-Robots-Tag",
+					"value": "noindex, nofollow, noarchive"
+				}
+			]
+		},
+		{
+			"source": "/tutorial/types.ts",
+			"headers": [
+				{
+					"key": "X-Robots-Tag",
+					"value": "noindex, nofollow, noarchive"
+				}
+			]
+		},
+		{
+			"source": "/tutorial/web3-provider.ts",
+			"headers": [
+				{
+					"key": "X-Robots-Tag",
+					"value": "noindex, nofollow, noarchive"
+				}
+			]
+		},
+		{
+			"source": "/package.json",
+			"headers": [
+				{
+					"key": "X-Robots-Tag",
+					"value": "noindex, nofollow, noarchive"
+				}
+			]
+		},
+		{
+			"source": "/tsconfig.json",
+			"headers": [
+				{
+					"key": "X-Robots-Tag",
+					"value": "noindex, nofollow, noarchive"
+				}
+			]
+		},
+		{
+			"source": "/vite.config.ts",
+			"headers": [
+				{
+					"key": "X-Robots-Tag",
+					"value": "noindex, nofollow, noarchive"
+				}
+			]
+		},
+		{
+			"source": "/.gitignore",
 			"headers": [
 				{
 					"key": "X-Robots-Tag",

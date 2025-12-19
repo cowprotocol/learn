@@ -17,6 +17,72 @@
 					"value": "cross-origin"
 				}
 			]
+		},
+		{
+			"source": "/(src(/.*)?|tutorial/lib(/.*)?|tutorial/types\\.ts|tutorial/web3-provider\\.ts|package\\.json|tsconfig\\.json|vite\\.config\\.ts|\\.gitignore)",
+			"headers": [
+				{
+					"key": "X-Robots-Tag",
+					"value": "noindex, nofollow, noarchive"
+				}
+			]
+		}
+	],
+	"redirects": [
+		{
+			"source": "/tutorial/getting-started-order",
+			"destination": "https://docs.cow.fi/cow-protocol/tutorials/building",
+			"permanent": true
+		},
+		{
+			"source": "/tutorial/create-pre-signed-order",
+			"destination": "https://docs.cow.fi/cow-protocol/tutorials/building",
+			"permanent": true
+		},
+		{
+			"source": "/tutorial/create-order-app-data",
+			"destination": "https://docs.cow.fi/cow-protocol/tutorials/building",
+			"permanent": true
+		},
+		{
+			"source": "/tutorial/create-eth-flow",
+			"destination": "https://docs.cow.fi/cow-protocol/tutorials/building",
+			"permanent": true
+		},
+		{
+			"source": "/tutorial/simple-app-data",
+			"destination": "https://docs.cow.fi/cow-protocol/tutorials/building",
+			"permanent": true
+		},
+		{
+			"source": "/tutorial/cancel-eth-flow",
+			"destination": "https://docs.cow.fi/cow-protocol/tutorials/building",
+			"permanent": true
+		},
+		{
+			"source": "/tutorial/approve-sell-token-order",
+			"destination": "https://docs.cow.fi/cow-protocol/tutorials/building",
+			"permanent": true
+		},
+		{
+			"source": "/tutorial/orderbook-upload-app-data",
+			"destination": "https://docs.cow.fi/cow-protocol/tutorials/building",
+			"permanent": true
+		},
+		{
+			"source": "/tutorial/view-app-data",
+			"destination": "https://docs.cow.fi/cow-protocol/tutorials/building",
+			"permanent": true
+		},
+		{
+			"source": "/tutorial/sign-order",
+			"destination": "https://docs.cow.fi/cow-protocol/tutorials/building",
+			"permanent": true
+		},
+		{
+			"source": "/tutorial/cancel-pre-signed-order",
+			"destination": "https://docs.cow.fi/cow-protocol/tutorials/building",
+			"permanent": true
 		}
 	]
 }

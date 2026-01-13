@@ -112,57 +112,57 @@
 	"redirects": [
 		{
 			"source": "/tutorial/getting-started-order",
-			"destination": "https://docs.cow.fi/cow-protocol/tutorials/building",
+			"destination": "/tutorial/getting-started",
 			"permanent": true
 		},
 		{
 			"source": "/tutorial/create-pre-signed-order",
-			"destination": "https://docs.cow.fi/cow-protocol/tutorials/building",
+			"destination": "/tutorial/getting-started",
 			"permanent": true
 		},
 		{
 			"source": "/tutorial/create-order-app-data",
-			"destination": "https://docs.cow.fi/cow-protocol/tutorials/building",
+			"destination": "/tutorial/getting-started",
 			"permanent": true
 		},
 		{
 			"source": "/tutorial/create-eth-flow",
-			"destination": "https://docs.cow.fi/cow-protocol/tutorials/building",
+			"destination": "/tutorial/getting-started",
 			"permanent": true
 		},
 		{
 			"source": "/tutorial/simple-app-data",
-			"destination": "https://docs.cow.fi/cow-protocol/tutorials/building",
+			"destination": "/tutorial/getting-started",
 			"permanent": true
 		},
 		{
 			"source": "/tutorial/cancel-eth-flow",
-			"destination": "https://docs.cow.fi/cow-protocol/tutorials/building",
+			"destination": "/tutorial/cancel-on-chain-order",
 			"permanent": true
 		},
 		{
 			"source": "/tutorial/approve-sell-token-order",
-			"destination": "https://docs.cow.fi/cow-protocol/tutorials/building",
+			"destination": "/tutorial/approve-cow-protocol",
 			"permanent": true
 		},
 		{
 			"source": "/tutorial/orderbook-upload-app-data",
-			"destination": "https://docs.cow.fi/cow-protocol/tutorials/building",
+			"destination": "/tutorial/getting-started",
 			"permanent": true
 		},
 		{
 			"source": "/tutorial/view-app-data",
-			"destination": "https://docs.cow.fi/cow-protocol/tutorials/building",
+			"destination": "/tutorial/getting-started",
 			"permanent": true
 		},
 		{
 			"source": "/tutorial/sign-order",
-			"destination": "https://docs.cow.fi/cow-protocol/tutorials/building",
+			"destination": "/tutorial/submit-order",
 			"permanent": true
 		},
 		{
 			"source": "/tutorial/cancel-pre-signed-order",
-			"destination": "https://docs.cow.fi/cow-protocol/tutorials/building",
+			"destination": "/tutorial/getting-started",
 			"permanent": true
 		}
 	]

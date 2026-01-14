@@ -2,7 +2,7 @@
 	"$schema": "https://openapi.vercel.sh/vercel.json",
 	"headers": [
 		{
-			"source": "_app/immutable/workers/(.*)",
+			"source": "/_app/immutable/workers/:path*",
 			"headers": [
 				{
 					"key": "cross-origin-opener-policy",
@@ -17,6 +17,153 @@
 					"value": "cross-origin"
 				}
 			]
+		},
+		{
+			"source": "/src",
+			"headers": [
+				{
+					"key": "X-Robots-Tag",
+					"value": "noindex, nofollow, noarchive"
+				}
+			]
+		},
+		{
+			"source": "/src/:path*",
+			"headers": [
+				{
+					"key": "X-Robots-Tag",
+					"value": "noindex, nofollow, noarchive"
+				}
+			]
+		},
+		{
+			"source": "/tutorial/lib",
+			"headers": [
+				{
+					"key": "X-Robots-Tag",
+					"value": "noindex, nofollow, noarchive"
+				}
+			]
+		},
+		{
+			"source": "/tutorial/lib/:path*",
+			"headers": [
+				{
+					"key": "X-Robots-Tag",
+					"value": "noindex, nofollow, noarchive"
+				}
+			]
+		},
+		{
+			"source": "/tutorial/types.ts",
+			"headers": [
+				{
+					"key": "X-Robots-Tag",
+					"value": "noindex, nofollow, noarchive"
+				}
+			]
+		},
+		{
+			"source": "/tutorial/web3-provider.ts",
+			"headers": [
+				{
+					"key": "X-Robots-Tag",
+					"value": "noindex, nofollow, noarchive"
+				}
+			]
+		},
+		{
+			"source": "/package.json",
+			"headers": [
+				{
+					"key": "X-Robots-Tag",
+					"value": "noindex, nofollow, noarchive"
+				}
+			]
+		},
+		{
+			"source": "/tsconfig.json",
+			"headers": [
+				{
+					"key": "X-Robots-Tag",
+					"value": "noindex, nofollow, noarchive"
+				}
+			]
+		},
+		{
+			"source": "/vite.config.ts",
+			"headers": [
+				{
+					"key": "X-Robots-Tag",
+					"value": "noindex, nofollow, noarchive"
+				}
+			]
+		},
+		{
+			"source": "/.gitignore",
+			"headers": [
+				{
+					"key": "X-Robots-Tag",
+					"value": "noindex, nofollow, noarchive"
+				}
+			]
+		}
+	],
+	"redirects": [
+		{
+			"source": "/tutorial/getting-started-order",
+			"destination": "/tutorial/getting-started",
+			"permanent": true
+		},
+		{
+			"source": "/tutorial/create-pre-signed-order",
+			"destination": "/tutorial/getting-started",
+			"permanent": true
+		},
+		{
+			"source": "/tutorial/create-order-app-data",
+			"destination": "/tutorial/getting-started",
+			"permanent": true
+		},
+		{
+			"source": "/tutorial/create-eth-flow",
+			"destination": "/tutorial/getting-started",
+			"permanent": true
+		},
+		{
+			"source": "/tutorial/simple-app-data",
+			"destination": "/tutorial/getting-started",
+			"permanent": true
+		},
+		{
+			"source": "/tutorial/cancel-eth-flow",
+			"destination": "/tutorial/cancel-on-chain-order",
+			"permanent": true
+		},
+		{
+			"source": "/tutorial/approve-sell-token-order",
+			"destination": "/tutorial/approve-cow-protocol",
+			"permanent": true
+		},
+		{
+			"source": "/tutorial/orderbook-upload-app-data",
+			"destination": "/tutorial/getting-started",
+			"permanent": true
+		},
+		{
+			"source": "/tutorial/view-app-data",
+			"destination": "/tutorial/getting-started",
+			"permanent": true
+		},
+		{
+			"source": "/tutorial/sign-order",
+			"destination": "/tutorial/submit-order",
+			"permanent": true
+		},
+		{
+			"source": "/tutorial/cancel-pre-signed-order",
+			"destination": "/tutorial/getting-started",
+			"permanent": true
 		}
 	]
 }
